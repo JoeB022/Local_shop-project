@@ -2,19 +2,21 @@ from flask import Blueprint, request, jsonify
 from app import db
 from models.stock import Stock
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from utils.auth_helper import role_required
 
 stock_bp = Blueprint('stock', __name__)
-# Add stock entry (Clerk)
+
+# Add stock entry (Clerk only)
 @stock_bp.route('/add', methods=['POST'])
 @jwt_required()
+@role_required(["clerk"])
 def add_stock():
-    current_user = get_jwt_identity()
-    if current_user['role'] != 'clerk':
-        return jsonify({'message': 'Clerks only!'}), 403
-
     data = request.get_json()
     product_id = data.get('product_id')
     quantity_received = data.get('quantity_received')
+
+    if not all([product_id, quantity_received]):
+        return jsonify({'message': 'Missing required fields'}), 400
 
     new_stock = Stock(
         product_id=product_id,
@@ -27,7 +29,7 @@ def add_stock():
     return jsonify({'message': 'Stock added successfully', 'stock': new_stock.to_dict()}), 201
 
 # Get all stock records
-@stock_bp.route('/', methods=['GET'])
+@stock_bp.route('/get_stocks', methods=['GET'])
 @jwt_required()
 def get_all_stock():
     stock = Stock.query.all()
@@ -36,11 +38,8 @@ def get_all_stock():
 # Update stock (Admin only)
 @stock_bp.route('/update/<int:stock_id>', methods=['PUT'])
 @jwt_required()
+@role_required(["admin"])
 def update_stock(stock_id):
-    current_user = get_jwt_identity()
-    if current_user['role'] != 'admin':
-        return jsonify({'message': 'Admins only!'}), 403
-
     stock = Stock.query.get(stock_id)
     if not stock:
         return jsonify({'message': 'Stock not found'}), 404
@@ -53,14 +52,11 @@ def update_stock(stock_id):
     db.session.commit()
     return jsonify({'message': 'Stock updated successfully', 'stock': stock.to_dict()}), 200
 
-# Request more supply (Clerk)
+# Request more supply (Clerk only)
 @stock_bp.route('/request/<int:stock_id>', methods=['POST'])
 @jwt_required()
+@role_required(["clerk"])
 def request_stock(stock_id):
-    current_user = get_jwt_identity()
-    if current_user['role'] != 'clerk':
-        return jsonify({'message': 'Clerks only!'}), 403
-
     stock = Stock.query.get(stock_id)
     if not stock:
         return jsonify({'message': 'Stock not found'}), 404
