@@ -525,14 +525,6 @@
             "markers": "python_version >= '3.6'",
             "version": "==3.2.2"
         },
-        "pycparser": {
-            "hashes": [
-                "sha256:491c8be9c040f5390f5bf44a5b07752bd07f56edf992381b05c701439eec10f6",
-                "sha256:c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc"
-            ],
-            "markers": "python_version >= '3.8'",
-            "version": "==2.22"
-        },
         "pyjwt": {
             "hashes": [
                 "sha256:3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953",
