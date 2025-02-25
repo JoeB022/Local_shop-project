@@ -8,7 +8,7 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap styles
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <GoogleOAuthProvider clientId="<your_client_id>">
+  <GoogleOAuthProvider clientId="<429411048349-8ad7b49ndt75scedng3rrp4s03emd4m3.apps.googleusercontent.com>">
     <Provider store={store}>
       <BrowserRouter>
         <App />
