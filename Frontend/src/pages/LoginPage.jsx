@@ -43,7 +43,10 @@ const LoginPage = () => {
               required
             />
           </div>
+
           <button type="submit" className="btn btn-primary w-100 mb-3">
+          <button type="submit" className="btn btn-primary w-100">
+
             Login
           </button>
         </form>
