@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -42,10 +43,24 @@ const LoginPage = () => {
               required
             />
           </div>
+
+          <button type="submit" className="btn btn-primary w-100 mb-3">
           <button type="submit" className="btn btn-primary w-100">
+
             Login
           </button>
         </form>
+        <div className="text-center">
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              console.log("Google Login Success:", credentialResponse);
+              // Dispatch Google login action if needed
+            }}
+            onError={() => {
+              console.log("Google Login Failed");
+            }}
+          />
+        </div>
       </div>
     </div>
   );
