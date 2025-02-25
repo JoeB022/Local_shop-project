@@ -4,8 +4,6 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_mail import Mail
-from flask_dance.contrib.google import make_google_blueprint
-from flask_dance.contrib.github import make_github_blueprint
 from config import Config
 
 # Extensions
@@ -14,20 +12,6 @@ migrate = Migrate()
 jwt = JWTManager()
 cors = CORS()
 mail = Mail()
-
-# Google OAuth Blueprint
-google_bp = make_google_blueprint(
-    client_id=Config.GOOGLE_CLIENT_ID,
-    client_secret=Config.GOOGLE_CLIENT_SECRET,
-    redirect_to="auth.google_login"
-)
-
-# GitHub OAuth Blueprint
-github_bp = make_github_blueprint(
-    client_id=Config.GITHUB_CLIENT_ID,
-    client_secret=Config.GITHUB_CLIENT_SECRET,
-    redirect_to="auth.github_login"
-)
 
 def create_app():
     app = Flask(__name__)
@@ -42,10 +26,6 @@ def create_app():
     jwt.init_app(app)
     cors.init_app(app)
     mail.init_app(app)
-
-    # Register OAuth Blueprints
-    app.register_blueprint(google_bp, url_prefix="/auth/google")
-    app.register_blueprint(github_bp, url_prefix="/auth/github")
 
     # Import and register blueprints (routes)
     from views.auth_routes import auth_bp
