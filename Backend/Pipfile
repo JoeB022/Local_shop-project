@@ -10,6 +10,8 @@ flask-migrate = "*"
 flask-jwt-extended = "*"
 flask-mail = "*"
 flask-cors = "*"
+flask-dance = "*"
+flask-oauthlib = "*"
 
 [dev-packages]
 
