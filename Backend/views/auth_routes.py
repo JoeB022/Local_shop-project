@@ -8,8 +8,6 @@ from flask_jwt_extended import (
     get_jwt_identity, 
     unset_jwt_cookies
 )
-from flask_dance.contrib.google import google
-from flask_dance.contrib.github import github
 from datetime import timedelta
 from utils.auth_helper import role_required
 from utils.email_helper import send_email
@@ -24,58 +22,6 @@ password_reset_tokens = {}
 # Generate a random 6-digit reset code
 def generate_reset_code():
     return ''.join(random.choices(string.digits, k=6))
-
-# Google Login
-@auth_bp.route("/google_login")
-def google_login():
-    if not google.authorized:
-        return redirect(url_for("google.login"))
-    
-    resp = google.get("/oauth2/v2/userinfo")
-    if resp.ok:
-        data = resp.json()
-        email = data["email"]
-
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            user = User(email=email, role="user")
-            db.session.add(user)
-            db.session.commit()
-
-        access_token = create_access_token(identity={'id': user.id, 'role': user.role})
-        return jsonify({
-            "message": "Google login successful",
-            "access_token": access_token,
-            "user": user.to_dict()
-        }), 200
-
-    return jsonify({"message": "Google login failed"}), 401
-
-# GitHub Login
-@auth_bp.route("/github_login")
-def github_login():
-    if not github.authorized:
-        return redirect(url_for("github.login"))
-    
-    resp = github.get("/user")
-    if resp.ok:
-        data = resp.json()
-        email = data["email"]
-
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            user = User(email=email, role="user")
-            db.session.add(user)
-            db.session.commit()
-
-        access_token = create_access_token(identity={'id': user.id, 'role': user.role})
-        return jsonify({
-            "message": "GitHub login successful",
-            "access_token": access_token,
-            "user": user.to_dict()
-        }), 200
-
-    return jsonify({"message": "GitHub login failed"}), 401
 
 # Request Password Reset (Send Email)
 @auth_bp.route('/password_reset_request', methods=['POST'])
