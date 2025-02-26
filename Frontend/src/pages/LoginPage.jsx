@@ -1,9 +1,17 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { login } from "../redux/authSlice"; // ✅ Import login action
+
+// 🔥 Mock Users (Replace with Backend API later)
+const users = [
+  { id: 1, email: "admin@example.com", password: "admin123", role: "admin" },
+  { id: 2, email: "clerk@example.com", password: "clerk123", role: "clerk" },
+];
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [error, setError] = useState(null); // ✅ Track login errors
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -13,14 +21,25 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch({ type: "LOGIN", payload: credentials });
-    navigate("/"); // Redirect to Home page after login
+
+    // 🔍 Check if user exists
+    const user = users.find(
+      (u) => u.email === credentials.email && u.password === credentials.password
+    );
+
+    if (user) {
+      dispatch(login(user)); // ✅ Store user in Redux (with role)
+      navigate(user.role === "admin" ? "/admin-dashboard" : "/clerk-dashboard"); // ✅ Redirect based on role
+    } else {
+      setError("Invalid email or password!"); // ❌ Display error
+    }
   };
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="card p-4 shadow" style={{ width: "350px" }}>
         <h3 className="text-center">Login</h3>
+        {error && <p className="text-danger text-center">{error}</p>} {/* ✅ Show error if login fails */}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label">Email</label>
@@ -30,6 +49,7 @@ const LoginPage = () => {
               className="form-control"
               onChange={handleChange}
               required
+              autoComplete="email"
             />
           </div>
           <div className="mb-3">
@@ -40,6 +60,7 @@ const LoginPage = () => {
               className="form-control"
               onChange={handleChange}
               required
+              autoComplete="current-password"
             />
           </div>
           <button type="submit" className="btn btn-primary w-100">
