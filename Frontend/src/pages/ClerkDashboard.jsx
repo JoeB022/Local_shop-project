@@ -1,25 +1,64 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const ClerkDashboard = () => {
+  const { section } = useParams();
+
+  // Define available sections
+  const sections = {
+    inventory: {
+      title: "📦 Inventory Management",
+      description: "Monitor, update, and add new stock.",
+    },
+    orders: {
+      title: "🛍️ Order Processing",
+      description: "View and manage pending customer orders.",
+    },
+    "customer-support": {
+      title: "👥 Customer Assistance",
+      description: "Help customers with inquiries and complaints.",
+    },
+    sales: {
+      title: "💰 Sales & Transactions",
+      description: "Track daily sales, returns, and payments.",
+    },
+    suppliers: {
+      title: "🚛 Supplier Management",
+      description: "Track stock deliveries and supplier details.",
+    },
+    notifications: {
+      title: "🔔 Notifications",
+      description: "Stay updated with system alerts and updates.",
+    },
+  };
+
+  // If a section is selected, show its details
+  if (section && sections[section]) {
+    return (
+      <div className="container mt-4">
+        <h2 className="text-center mb-4">{sections[section].title}</h2>
+        <p className="text-center">{sections[section].description}</p>
+        <div className="text-center">
+          <Link to="/clerk-dashboard" className="btn btn-secondary">⬅ Back to Dashboard</Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Default Clerk Dashboard Overview
   return (
     <div className="container mt-4">
-      <h2>Clerk Dashboard</h2>
-      <div className="row">
-        <div className="col-md-4">
-          <div className="card p-3">
-            <h5>Stock Overview</h5>
-            <p>Manage and track inventory.</p>
-            <Link to="/inventory" className="btn btn-primary">View Stock</Link>
+      <h2 className="text-center mb-4">🛒 Clerk Dashboard</h2>
+      <div className="row g-4">
+        {Object.entries(sections).map(([key, value]) => (
+          <div className="col-md-4" key={key}>
+            <div className="card shadow-sm p-3">
+              <h5>{value.title}</h5>
+              <p>{value.description}</p>
+              <Link to={`/clerk-dashboard/${key}`} className="btn btn-primary">Go to {value.title}</Link>
+            </div>
           </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card p-3">
-            <h5>New Orders</h5>
-            <p>Manage recent customer orders.</p>
-            <Link to="/orders" className="btn btn-success">View Orders</Link>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

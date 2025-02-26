@@ -1,9 +1,43 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../redux/productSlice";
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+
+// Static products (fallback)
+const staticProducts = [
+  { id: 1, name: "iPhone_16_Pro", price: 1050.99, image: "/images/iphone_16_pro.jpg" },
+  { id: 2, name: "Adidas_campus", price: 60.99, image: "/images/Addidas_campus.png" },
+  { id: 3, name: "Starlit_PS5", price: 50.99, image: "/images/Starlit_PS5.jpeg" },
+  { id: 4, name: "Sony_headphones", price: 120.50, image: "/images/Sony_headphones.png" },
+  { id: 5, name: "Smart_TV", price: 499.99, image: "/images/Smart_TV.png" },
+  { id: 6, name: "Gaming_laptop", price: 1500.00, image: "/images/Gaming_laptop.png" },
+  { id: 7, name: "Wireless_mouse", price: 25.99, image: "/images/Wireless_mouse.png" },
+  { id: 8, name: "Running_shoes", price: 89.99, image: "/images/Running_shoes.png" },
+  { id: 9, name: "Smart_watch", price: 199.99, image: "/images/Smart_watch.png" },
+];
 
 export default function Home() {
+  const dispatch = useDispatch();
+  const { products, status, error } = useSelector((state) => state.products);
+  const [useStatic, setUseStatic] = useState(false); // Fallback flag
+
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchProducts());
+    }
+  }, [status, dispatch]);
+
+  useEffect(() => {
+    if (status === "failed") {
+      setUseStatic(true); // Use static products if fetch fails
+    }
+  }, [status]);
+
   return (
     <div className="container my-5">
+      <Navbar />
+
       {/* Welcome Message */}
       <header className="text-center mb-5">
         <h1>Welcome to Local Shop</h1>
@@ -14,45 +48,21 @@ export default function Home() {
       <section className="mb-5">
         <h2 className="mb-3">Featured Products</h2>
         <div className="row">
-          <div className="col-md-4">
-            <div className="card">
-            <img src="/images/iphone_16_pro.jpg" alt="iPhone 16 Pro" className="card-img-top" />
-              <div className="card-body">
-                <h5 className="card-title">Product 1</h5>
-                <p className="card-text">$19.99</p>
+          {status === "loading" ? (
+            <p className="text-center">Loading products...</p>
+          ) : (
+            (useStatic ? staticProducts : products).map((product) => (
+              <div key={product.id} className="col-md-4 mb-4">
+                <div className="card h-100">
+                  <img src={product.image} alt={product.name} className="card-img-top" />
+                  <div className="card-body">
+                    <h5 className="card-title">{product.name}</h5>
+                    <p className="card-text">${product.price.toFixed(2)}</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div className="card">
-              <img src="/images/product2.jpg" alt="Product 2" className="card-img-top" />
-              <div className="card-body">
-                <h5 className="card-title">Product 2</h5>
-                <p className="card-text">$24.99</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div className="card">
-              <img src="/images/product3.jpg" alt="Product 3" className="card-img-top" />
-              <div className="card-body">
-                <h5 className="card-title">Product 3</h5>
-                <p className="card-text">$29.99</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="mb-5">
-        <h2 className="mb-3">Shop by Category</h2>
-        <div className="d-flex justify-content-around">
-          <Link to="/category/electronics" className="btn btn-primary">Electronics</Link>
-          <Link to="/category/clothing" className="btn btn-primary">Clothing</Link>
-          <Link to="/category/home-goods" className="btn btn-primary">Home Goods</Link>
+            ))
+          )}
         </div>
       </section>
 
