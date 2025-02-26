@@ -1,67 +1,146 @@
-import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
-const ClerkDashboard = () => {
-  const { section } = useParams();
+function ClerkDashboard() {
+  const { user } = useContext(AuthContext);
+  const [stock, setStock] = useState([]);
+  const [newStock, setNewStock] = useState({
+    product_id: "",
+    quantity_received: "",
+    buying_price: "",
+    selling_price: "",
+    payment_status: "unpaid",
+  });
 
-  // Define available sections
-  const sections = {
-    inventory: {
-      title: "📦 Inventory Management",
-      description: "Monitor, update, and add new stock.",
-    },
-    orders: {
-      title: "🛍️ Order Processing",
-      description: "View and manage pending customer orders.",
-    },
-    "customer-support": {
-      title: "👥 Customer Assistance",
-      description: "Help customers with inquiries and complaints.",
-    },
-    sales: {
-      title: "💰 Sales & Transactions",
-      description: "Track daily sales, returns, and payments.",
-    },
-    suppliers: {
-      title: "🚛 Supplier Management",
-      description: "Track stock deliveries and supplier details.",
-    },
-    notifications: {
-      title: "🔔 Notifications",
-      description: "Stay updated with system alerts and updates.",
-    },
+  // Fetch stock data from the backend
+  useEffect(() => {
+    const fetchStock = async () => {
+      const response = await fetch(`http://localhost:5000/stock/`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setStock(data);
+      } else {
+        alert("Failed to fetch stock data");
+      }
+    };
+    fetchStock();
+  }, []);
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    setNewStock({ ...newStock, [e.target.name]: e.target.value });
   };
 
-  // If a section is selected, show its details
-  if (section && sections[section]) {
-    return (
-      <div className="container mt-4">
-        <h2 className="text-center mb-4">{sections[section].title}</h2>
-        <p className="text-center">{sections[section].description}</p>
-        <div className="text-center">
-          <Link to="/clerk-dashboard" className="btn btn-secondary">⬅ Back to Dashboard</Link>
-        </div>
-      </div>
-    );
-  }
+  // Submit new stock entry
+  const handleAddStock = async (e) => {
+    e.preventDefault();
+    const response = await fetch(`http://localhost:5000/stock/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(newStock),
+    });
 
-  // Default Clerk Dashboard Overview
+    if (response.ok) {
+      alert("Stock added successfully!");
+      window.location.reload();
+    } else {
+      alert("Failed to add stock");
+    }
+  };
+
+  // Request more supply
+  const handleRequestSupply = async (stockId) => {
+    const response = await fetch(`http://localhost:5000/stock/request/${stockId}`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+
+    if (response.ok) {
+      alert("Supply request sent to store admin!");
+    } else {
+      alert("Failed to request supply");
+    }
+  };
+
   return (
-    <div className="container mt-4">
-      <h2 className="text-center mb-4">🛒 Clerk Dashboard</h2>
-      <div className="row g-4">
-        {Object.entries(sections).map(([key, value]) => (
-          <div className="col-md-4" key={key}>
-            <div className="card shadow-sm p-3">
-              <h5>{value.title}</h5>
-              <p>{value.description}</p>
-              <Link to={`/clerk-dashboard/${key}`} className="btn btn-primary">Go to {value.title}</Link>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="container mt-5">
+      <h2>Clerk Dashboard</h2>
+
+      {/* Add New Stock Form */}
+      <form onSubmit={handleAddStock} className="mb-4">
+        <h4>Add Stock</h4>
+        <input
+          type="text"
+          name="product_id"
+          className="form-control mb-2"
+          placeholder="Product ID"
+          value={newStock.product_id}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="quantity_received"
+          className="form-control mb-2"
+          placeholder="Quantity Received"
+          value={newStock.quantity_received}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="buying_price"
+          className="form-control mb-2"
+          placeholder="Buying Price"
+          value={newStock.buying_price}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="selling_price"
+          className="form-control mb-2"
+          placeholder="Selling Price"
+          value={newStock.selling_price}
+          onChange={handleChange}
+          required
+        />
+        <button type="submit" className="btn btn-primary">Add Stock</button>
+      </form>
+
+      {/* Display Stock List */}
+      <h4>Current Stock</h4>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Product ID</th>
+            <th>Quantity</th>
+            <th>Payment Status</th>
+            <th>Request Supply</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stock.map((item) => (
+            <tr key={item.id}>
+              <td>{item.product_id}</td>
+              <td>{item.quantity_in_stock}</td>
+              <td>{item.payment_status}</td>
+              <td>
+                <button className="btn btn-warning" onClick={() => handleRequestSupply(item.id)}>
+                  Request Supply
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-};
+}
 
 export default ClerkDashboard;

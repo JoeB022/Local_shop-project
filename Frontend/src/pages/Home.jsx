@@ -19,7 +19,7 @@ const staticProducts = [
 
 export default function Home() {
   const dispatch = useDispatch();
-  const { products, status, error } = useSelector((state) => state.products);
+  const { products, status } = useSelector((state) => state.products);
   const [useStatic, setUseStatic] = useState(false); // Fallback flag
 
   useEffect(() => {
@@ -43,6 +43,16 @@ export default function Home() {
         <h1>Welcome to Local Shop</h1>
         <p>Your one-stop shop for quality products at great prices.</p>
       </header>
+
+      {/* Role-Based Dashboard Links */}
+      <section className="text-center mb-5">
+        <h2>Dashboard Access</h2>
+        <div className="d-flex justify-content-center gap-3 mt-3">
+          <Link to="/merchant-dashboard" className="btn btn-primary">Merchant</Link>
+          <Link to="/admin-dashboard" className="btn btn-danger">Admin</Link>
+          <Link to="/clerk-dashboard" className="btn btn-info">Clerk</Link>
+        </div>
+      </section>
 
       {/* Product Showcase */}
       <section className="mb-5">

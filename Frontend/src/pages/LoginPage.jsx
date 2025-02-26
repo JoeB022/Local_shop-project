@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
-import { login } from "../redux/authSlice"; // ✅ Import login action
-
-// 🔥 Mock Users (Replace with Backend API later)
-const users = [
-  { id: 1, email: "admin@example.com", password: "admin123", role: "admin" },
-  { id: 2, email: "clerk@example.com", password: "clerk123", role: "clerk" },
-];
+import { login } from "../redux/authSlice"; // ✅ Import Redux login action
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -20,19 +13,41 @@ const LoginPage = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 🔍 Check if user exists
-    const user = users.find(
-      (u) => u.email === credentials.email && u.password === credentials.password
-    );
+    try {
+      const response = await fetch("http://localhost:5000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      });
 
-    if (user) {
-      dispatch(login(user)); // ✅ Store user in Redux (with role)
-      navigate(user.role === "admin" ? "/admin-dashboard" : "/clerk-dashboard"); // ✅ Redirect based on role
-    } else {
-      setError("Invalid email or password!"); // ❌ Display error
+      const data = await response.json();
+
+      if (response.ok) {
+        dispatch(login(data.user)); // ✅ Store user in Redux
+        alert("Login successful!");
+
+        // ✅ Redirect based on user role
+        switch (data.user.role) {
+          case "admin":
+            navigate("/admin-dashboard");
+            break;
+          case "clerk":
+            navigate("/clerk-dashboard");
+            break;
+          case "merchant":
+            navigate("/merchant-dashboard");
+            break;
+          default:
+            navigate("/");
+        }
+      } else {
+        setError(data.message || "Invalid email or password!"); // ❌ Handle backend error
+      }
+    } catch (error) {
+      setError("Something went wrong. Please try again."); // ❌ Handle fetch errors
     }
   };
 
@@ -65,23 +80,10 @@ const LoginPage = () => {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 mb-3">
           <button type="submit" className="btn btn-primary w-100">
-
             Login
           </button>
         </form>
-        <div className="text-center">
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              console.log("Google Login Success:", credentialResponse);
-              // Dispatch Google login action if needed
-            }}
-            onError={() => {
-              console.log("Google Login Failed");
-            }}
-          />
-        </div>
       </div>
     </div>
   );

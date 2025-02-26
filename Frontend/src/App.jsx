@@ -14,9 +14,7 @@ import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-
-// Dummy Merchant Dashboard (Replace with actual component)
-const MerchantDashboard = () => <h2 className="text-center mt-4">Merchant Dashboard</h2>;
+import MerchantDashboard from "./pages/MerchantDashboard"; // Move MerchantDashboard to a separate file
 
 const App = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -48,11 +46,7 @@ const App = () => {
 
             {/* Role-Specific Dashboards */}
             <Route path="/admin-dashboard" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin-dashboard/:section" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
-
             <Route path="/clerk-dashboard" element={<ProtectedRoute requiredRole="clerk"><ClerkDashboard /></ProtectedRoute>} />
-            <Route path="/clerk-dashboard/:section" element={<ProtectedRoute requiredRole="clerk"><ClerkDashboard /></ProtectedRoute>} />
-
             <Route path="/merchant-dashboard" element={<ProtectedRoute requiredRole="merchant"><MerchantDashboard /></ProtectedRoute>} />
 
             {/* General Protected Routes (Available to any logged-in user) */}

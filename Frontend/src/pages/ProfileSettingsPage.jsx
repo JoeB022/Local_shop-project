@@ -6,9 +6,11 @@ const ProfileSettingsPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    profilePic: "",
   });
 
   const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState("");
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,7 +30,7 @@ const ProfileSettingsPage = () => {
       [name]: value,
     }));
 
-    // Validate on change
+    // Validate fields on change
     if (name === "email") {
       setErrors((prev) => ({
         ...prev,
@@ -53,7 +55,7 @@ const ProfileSettingsPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -71,8 +73,36 @@ const ProfileSettingsPage = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      alert("Profile updated successfully!");
-      // Submit form or call API here
+      handleUpdateProfile();
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/auth/update_profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          username: formData.name,
+          profilePic: formData.profilePic,
+          newPassword: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage("Profile updated successfully!");
+      } else {
+        setMessage(data.error || "Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setMessage("Something went wrong. Please try again.");
     }
   };
 
@@ -80,6 +110,8 @@ const ProfileSettingsPage = () => {
     <div className="container mt-4">
       <h2>Profile Settings</h2>
       <p>Update your personal details below:</p>
+
+      {message && <div className="alert alert-info">{message}</div>}
 
       <form onSubmit={handleSubmit} className="mt-3">
         <div className="mb-3">
@@ -111,7 +143,19 @@ const ProfileSettingsPage = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Password</label>
+          <label className="form-label">Profile Picture URL</label>
+          <input
+            type="text"
+            name="profilePic"
+            className="form-control"
+            value={formData.profilePic}
+            onChange={handleChange}
+            placeholder="Enter profile picture URL"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">New Password</label>
           <input
             type="password"
             name="password"
@@ -125,7 +169,7 @@ const ProfileSettingsPage = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Confirm Password</label>
+          <label className="form-label">Confirm New Password</label>
           <input
             type="password"
             name="confirmPassword"
