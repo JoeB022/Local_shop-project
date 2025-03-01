@@ -7,7 +7,7 @@ class Stock(db.Model):
     quantity_received = db.Column(db.Integer, nullable=False)
     quantity_in_stock = db.Column(db.Integer, nullable=False)
     quantity_damaged = db.Column(db.Integer, default=0)
-    payment_status = db.Column(db.String(50), default="unpaid")  # Options: paid, unpaid
+    payment_status = db.Column(db.String(50), default="unpaid")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     product = db.relationship('Product', backref='stock')
