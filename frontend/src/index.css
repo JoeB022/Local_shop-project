@@ -1,0 +1,162 @@
+/* src/index.css */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+nav {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 15px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+h1 {
+  color: #333;
+}
+
+form {
+  margin: 20px 0;
+}
+
+input {
+  display: block;
+  margin: 10px 0;
+  padding: 10px;
+  width: 200px;
+}
+
+button {
+  padding: 10px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+/* src/index.css */
+
+/* Existing styles... */
+
+.navbar {
+  background-color: #f8f9fa; /* Light background color */
+  padding: 10px 20px; /* Padding for the navbar */
+}
+
+.navbar-list {
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space between items */
+  align-items: center; /* Center items vertically */
+  list-style: none; /* Remove default list styles */
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+}
+
+.center-links {
+  display: flex; /* Use flexbox for center links */
+  justify-content: center; /* Center the dashboard links */
+  flex-grow: 1; /* Allow this section to grow */
+}
+
+.navbar-item {
+  margin: 0 15px; /* Space between items */
+}
+
+.navbar-item a {
+  text-decoration: none; /* Remove underline from links */
+  color: #007bff; /* Link color */
+}
+
+.navbar-item a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+.left {
+  margin-right: auto; /* Push home link to the left */
+}
+
+.right {
+  margin-left: auto; /* Push login/register links to the right */
+}
+
+/* src/pages/HomePage.css */
+/* src/pages/HomePage.css */
+.home-container {
+  display: flex;
+  justify-content: center; /* Center content horizontally */
+  align-items: flex-start; /* Align content to the top */
+  height: 100vh; /* Full viewport height */
+  background-color: gray; /* Light background color */
+  padding: 20px; /* Padding around the container */
+}
+
+.content {
+  background-color: white; /* White background for content */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  padding: 40px; /* Padding inside the content box */
+  max-width: 800px; /* Maximum width for the content */
+  text-align: left; /* Align text to the left */
+  margin-top: 20px; /* Add some margin at the top */
+}
+
+h1 {
+  color: #333; /* Darker color for the heading */
+  margin-bottom: 15px; /* Space below the heading */
+  font-size: 2.5rem; /* Increase font size */
+}
+
+p {
+  color: #555; /* Medium gray for paragraph text */
+  line-height: 1.6; /* Improve readability */
+  margin-bottom: 10px; /* Space below paragraphs */
+  font-size: 1.2rem; /* Increase font size */
+}
+
+ul {
+  color: #555; /* Medium gray for list items */
+  margin-left: 20px; /* Indent list items */
+  margin-bottom: 10px; /* Space below the list */
+  font-size: 1.2rem; /* Increase font size */
+}
+
+/* Hover effect for paragraphs and list items */
+p:hover, ul li:hover {
+  color: cornflowerblue; /* Change color on hover */
+  cursor: pointer; /* Change cursor to pointer */
+  transition: color 0.3s; /* Smooth transition */
+}
+/* src/components/Common/Footer.css */
+.footer {
+  background-color: #f8f9fa; /* Light background color */
+  text-align: center; /* Center the text */
+  padding: 10px 0; /* Padding for top and bottom */
+  position: relative; /* Ensure it stays in the normal flow */
+  bottom: 0; /* Align to the bottom */
+  width: 100%; /* Full width */
+  margin-top: auto; /* Push it to the bottom of the page */
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the app takes full height */
+}
