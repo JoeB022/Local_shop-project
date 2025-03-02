@@ -11,8 +11,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Simulate login logic
-        const userData = { email }; // You can add more user data as needed
+        const userData = { email };
         if (email === 'clerk@localshop.com') {
             login(userData);
             navigate('/clerk');
@@ -28,23 +27,32 @@ const Login = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-            />
-            <button type="submit">Login</button>
-        </form>
+        <div className="auth-container"> {/* Styles the full-page background */}
+            <div className="auth-box"> {/* Styles the login form container */}
+                <h1>Login</h1>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="email"
+                        className="auth-input" // Matches CSS for styling
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="password"
+                        className="auth-input"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <button type="submit" className="login-btn">
+                        Login
+                    </button>
+                </form>
+            </div>
+        </div>
     );
 };
 

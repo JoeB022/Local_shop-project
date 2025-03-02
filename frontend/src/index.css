@@ -310,4 +310,145 @@ input {
     padding: 30px;
   }
 }
+/* Admin Dashboard Styling */
+.admin-dashboard {
+  padding: 40px;
+  text-align: center;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #FFEB3B;
+}
+
+.dashboard-content {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-content p {
+  font-size: 1.4rem;
+  color: #ffffff;
+}
+
+/* Logout Button */
+.logout-btn {
+  background: #FF3D00;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #D32F2F;
+  transform: translateY(-3px);
+}
+/* Clerk Dashboard */
+.clerk-dashboard {
+  padding: 40px;
+  text-align: center;
+}
+
+/* Reuse the shared dashboard styles */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #FFEB3B;
+}
+
+.dashboard-content {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-content p {
+  font-size: 1.4rem;
+  color: #ffffff;
+}
+
+/* Logout Button */
+.logout-btn {
+  background: #FF3D00;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #D32F2F;
+  transform: translateY(-3px);
+}
+/* Footer Styling */
+.footer {
+  background: rgba(255, 255, 255, 0.1); /* Slight transparency */
+  backdrop-filter: blur(8px);
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-text {
+  font-size: 1.2rem;
+  color: #FFEB3B;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+  .footer {
+    padding: 15px;
+  }
+
+  .footer-text {
+    font-size: 1rem;
+  }
+}
 

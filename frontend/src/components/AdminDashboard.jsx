@@ -1,4 +1,4 @@
-// src /components/Dashboard/AdminDashboard.js
+// src/components/Dashboard/AdminDashboard.js
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -14,11 +14,15 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div>
-            <h1>Admin Dashboard</h1>
-            <AdminPage />
-            <p>Welcome to the Admin Dashboard!</p>
-            <button onClick={handleLogout}>Logout</button>
+        <div className="admin-dashboard">
+            <div className="dashboard-header">
+                <h1>Admin Dashboard</h1>
+                <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            </div>
+            <div className="dashboard-content">
+                <p>Welcome to the Admin Dashboard!</p>
+                <AdminPage />
+            </div>
         </div>
     );
 };

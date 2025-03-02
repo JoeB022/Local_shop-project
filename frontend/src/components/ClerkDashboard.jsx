@@ -14,11 +14,15 @@ const ClerkDashboard = () => {
     };
 
     return (
-        <div>
-            <h1>Clerk Dashboard</h1>
-            <ClerkPage />
-            <p>Welcome to the Clerk Dashboard!</p>
-            <button onClick={handleLogout}>Logout</button>
+        <div className="clerk-dashboard">
+            <div className="dashboard-header">
+                <h1>Clerk Dashboard</h1>
+                <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            </div>
+            <div className="dashboard-content">
+                <p>Welcome to the Clerk Dashboard!</p>
+                <ClerkPage />
+            </div>
         </div>
     );
 };
