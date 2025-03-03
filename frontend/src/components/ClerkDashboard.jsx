@@ -17,11 +17,13 @@ const ClerkDashboard = () => {
         <div className="clerk-dashboard">
             <div className="dashboard-header">
                 <h1>Clerk Dashboard</h1>
-                <button className="logout-btn" onClick={handleLogout}>Logout</button>
             </div>
             <div className="dashboard-content">
                 <p>Welcome to the Clerk Dashboard!</p>
                 <ClerkPage />
+            </div>
+            <div className="dashboard-footer">
+                <button className="logout-btn" onClick={handleLogout}>Logout</button>
             </div>
         </div>
     );

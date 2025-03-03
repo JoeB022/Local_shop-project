@@ -10,6 +10,7 @@ import MerchantDashboard from './components/MerchantDashboard';
 import ProfileDashboard from './components/ProfileDashboard'; // Import the ProfileDashboard component
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import './App.css';
 
 const App = () => {
     // Simulate user role (this should come from your authentication logic)

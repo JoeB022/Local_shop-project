@@ -101,7 +101,7 @@ const ClerkPage = () => {
 
     return (
         <div>
-            <h1>Clerk Dashboard</h1>
+          
             <form onSubmit={handleSubmit}>
                 <h2>Add Item Details</h2>
                 <label>

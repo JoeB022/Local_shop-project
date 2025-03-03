@@ -166,29 +166,57 @@ const MerchantPage = () => {
                 onChange={(e) => setNewAdminEmail(e.target.value)}
                 placeholder="New Admin Email"
                 required
+                style={{ marginRight: '10px', padding: '5px' }}
             />
-            <button onClick={handleAddAdmin}>Add Admin</button>
+            <button style={{ marginBottom: '10px', padding: '5px 10px' }} onClick={handleAddAdmin}>
+                Add Admin
+            </button>
+
             <h2>Manage Admins</h2>
             <ul>
                 {admins.map(admin => (
-                    <li key={admin.id}>
+                    <li key={admin.id} style={{ marginBottom: '10px' }}>
                         {admin.name} - Status: {admin.status}
-                        <button onClick={() => handleDeactivateAdmin(admin.id)}>Deactivate</button>
-                        <button onClick={() => handleDeleteAdmin(admin.id)}>Delete</button>
+                        <button
+                            style={{ marginLeft: '10px', marginRight: '5px', padding: '5px 10px' }}
+                            onClick={() => handleDeactivateAdmin(admin.id)}
+                        >
+                            Deactivate
+                        </button>
+                        <button
+                            style={{ padding: '5px 10px' }}
+                            onClick={() => handleDeleteAdmin(admin.id)}
+                        >
+                            Delete
+                        </button>
                     </li>
                 ))}
             </ul>
-            <button onClick={handleViewPerformance}>View Store Performance</button>
+
+            <button style={{ marginTop: '10px', padding: '10px 15px' }} onClick={handleViewPerformance}>
+                View Store Performance
+            </button>
+
             {performanceData && (
                 <div>
                     <h2>Store Performance</h2>
                     <Bar data={chartData} />
+
                     <h3>Select a Store to View Product Performance</h3>
-                    {Object.keys(performanceData).map(store => (
-                        <button key={store} onClick={() => handleStoreSelect(store)}>View {store}</button>
-                    ))}
+                    <div style={{ marginTop: '10px' }}>
+                        {Object.keys(performanceData).map(store => (
+                            <button
+                                key={store}
+                                style={{ marginRight: '10px', padding: '5px 10px' }}
+                                onClick={() => handleStoreSelect(store)}
+                            >
+                                View {store}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             )}
+
             {selectedStore && productPerformanceData && (
                 <div>
                     <h2>Product Performance for {selectedStore}</h2>

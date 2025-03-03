@@ -14,10 +14,9 @@ const MerchantDashboard = () => {
     };
 
     return (
-        <div>
+        <div className='merchant-dashboard'>
             <h1>Merchant Dashboard</h1>
             <MerchantPage />
-            <p>Welcome to the Merchant Dashboard!</p>
             <button onClick={handleLogout}>Logout</button>
         </div>
     );
