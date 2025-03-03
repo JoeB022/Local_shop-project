@@ -103,54 +103,74 @@ const ClerkPage = () => {
         <div>
             <h1>Clerk Dashboard</h1>
             <form onSubmit={handleSubmit}>
-                <input
-                    type="number"
-                    name="itemsReceived"
-                    value={itemDetails.itemsReceived}
-                    onChange={handleInputChange}
-                    placeholder="Items Received"
-                    required
-                />
-                <select
-                    name="paymentStatus"
-                    value={itemDetails.paymentStatus}
-                    onChange={handleInputChange}
-                    required
-                >
-                    <option value="not paid">Not Paid</option>
-                    <option value="paid">Paid</option>
-                </select>
-                <input
-                    type="number"
-                    name="itemsInStock"
-                    value={itemDetails.itemsInStock}
-                    onChange={handleInputChange}
-                    placeholder="Items in Stock"
-                    required
-                />
-                <input
-                    type="number"
-                    name="itemsSpoilt"
-                    value={itemDetails.itemsSpoilt}
-                    onChange={handleInputChange}
-                    placeholder="Items Spoilt"
-                    required
-                />
-                <input
-                    type="number"
-                    name="buyingPrice"
-                    value={itemDetails.buyingPrice}
-                    onChange={handleInputChange}placeholder="Buying Price"
-                    required
-                />
-                <input
-                    type="number"
-                    name="sellingPrice"
-                    value={itemDetails.sellingPrice}
-                    onChange={handleInputChange}
-                    placeholder="Selling Price"
-                    required
-                />
+                <h2>Add Item Details</h2>
+                <label>
+                    Items Received:
+                    <input
+                        type="number"
+                        name="itemsReceived"
+                        value={itemDetails.itemsReceived}
+                        onChange={handleInputChange}
+                        placeholder="Enter number of items received"
+                        required
+                    />
+                </label>
+                <label>
+                    Payment Status:
+                    <select
+                        name="paymentStatus"
+                        value={itemDetails.paymentStatus}
+                        onChange={handleInputChange}
+                        required
+                    >
+                        <option value="not paid">Not Paid</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                </label>
+                <label>
+                    Items in Stock:
+                    <input
+                        type="number"
+                        name="itemsInStock"
+                        value={itemDetails.itemsInStock}
+                        onChange={handleInputChange}
+                        placeholder="Enter number of items in stock"
+                        required
+                    />
+                </label>
+                <label>
+                    Items Spoilt:
+                    <input
+                        type="number"
+                        name="itemsSpoilt"
+                        value={itemDetails.itemsSpoilt}
+                        onChange={handleInputChange}
+                        placeholder="Enter number of items spoilt"
+                        required
+                    />
+                </label>
+                <label>
+                    Buying Price:
+                    <input
+                        type="number"
+                        name="buyingPrice"
+                        value={itemDetails.buyingPrice}
+                        onChange={handleInputChange}
+                        placeholder="Enter buying price"
+                        required
+                    />
+                </label>
+                <label>
+                    Selling Price:
+                    <input
+                        type="number"
+                        name="sellingPrice"
+                        value={itemDetails.sellingPrice}
+                        onChange={handleInputChange}
+                        placeholder="Enter selling price"
+                        required
+                    />
+                </label>
                 <button type="submit">Record Item</button>
             </form>
             <button onClick={handleRequestSupply}>Request Supply</button>

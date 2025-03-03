@@ -37,12 +37,26 @@ const fetchStorePerformance = async () => {
     });
 };
 
+// Mock function to fetch individual product performance
+const fetchProductPerformance = async (store) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({
+                productA: { sales: 500, paid: 30, unpaid: 10 },
+                productB: { sales: 500, paid: 20, unpaid: 10 },
+            });
+        }, 500); // Simulate a 0.5 second delay
+    });
+};
+
 const MerchantPage = () => {
     const [admins, setAdmins] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [newAdminEmail, setNewAdminEmail] = useState('');
     const [performanceData, setPerformanceData] = useState(null);
+    const [selectedStore, setSelectedStore] = useState(null);
+    const [productPerformanceData, setProductPerformanceData] = useState(null);
 
     useEffect(() => {
         const getAdmins = async () => {
@@ -76,6 +90,12 @@ const MerchantPage = () => {
         console.log('Store Performance Data:', data);
     };
 
+    const handleStoreSelect = async (store) => {
+        setSelectedStore(store);
+        const data = await fetchProductPerformance(store); // Fetch product performance for the selected store
+        setProductPerformanceData(data);
+    };
+
     const handleDeactivateAdmin = (adminId) => {
         setAdmins(admins.map(admin =>
             admin.id === adminId ? { ...admin, status: 'Deactivated' } : admin
@@ -84,14 +104,17 @@ const MerchantPage = () => {
     };
 
     const handleDeleteAdmin = (adminId) => {
-        setAdmins(admins.filter(admin => admin.id !== adminId));
-        alert('Admin deleted successfully!');
+        const confirmDelete = window.confirm('Are you sure you want to delete this admin?');
+        if (confirmDelete) {
+            setAdmins(admins.filter(admin => admin.id !== adminId));
+            alert('Admin deleted successfully!');
+        }
     };
 
     if (loading) return <p>Loading admins...</p>;
     if (error) return <p>{error}</p>;
 
-    // Prepare data for the chart
+    // Prepare data for the store performance chart
     const chartData = {
         labels: Object.keys(performanceData || {}).map(store => `Store ${store}`),
         datasets: [
@@ -113,9 +136,30 @@ const MerchantPage = () => {
         ],
     };
 
+    // Prepare data for the product performance chart
+    const productChartData = {
+        labels: Object.keys(productPerformanceData || {}),
+        datasets: [
+            {
+                label: 'Sales',
+                data: productPerformanceData ? Object.values(productPerformanceData).map(product => product.sales) : [],
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            },
+            {
+                label: 'Paid',
+                data: productPerformanceData ? Object.values(productPerformanceData).map(product => product.paid) : [],
+                backgroundColor: 'rgba(153, 102, 255, 0.6)',
+            },
+            {
+                label: 'Unpaid',
+                data: productPerformanceData ? Object.values(productPerformanceData).map(product => product.unpaid) : [],
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            },
+        ],
+    };
+
     return (
         <div>
-            <h1>Merchant Dashboard</h1>
             <input
                 type="email"
                 value={newAdminEmail}
@@ -139,6 +183,16 @@ const MerchantPage = () => {
                 <div>
                     <h2>Store Performance</h2>
                     <Bar data={chartData} />
+                    <h3>Select a Store to View Product Performance</h3>
+                    {Object.keys(performanceData).map(store => (
+                        <button key={store} onClick={() => handleStoreSelect(store)}>View {store}</button>
+                    ))}
+                </div>
+            )}
+            {selectedStore && productPerformanceData && (
+                <div>
+                    <h2>Product Performance for {selectedStore}</h2>
+                    <Bar data={productChartData} />
                 </div>
             )}
         </div>

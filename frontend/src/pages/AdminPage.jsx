@@ -36,10 +36,28 @@ const approveSupplyRequest = async (requestId) => {
     });
 };
 
+const declineSupplyRequest = async (requestId) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(`Request ${requestId} declined`);
+        }, 500);
+    });
+};
+
 const deactivateClerk = async (clerkId) => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(`Clerk ${clerkId} deactivated`);
+        }, 500);
+    });
+};
+
+const addClerk = async (name) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const newClerk = { id: Date.now(), name, status: 'Active', requestId: null };
+            mockClerks.push(newClerk);
+            resolve(newClerk);
         }, 500);
     });
 };
@@ -49,6 +67,7 @@ const AdminPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [products, setProducts] = useState(mockProducts);
+    const [newClerkName, setNewClerkName] = useState('');
     const chartRef = useRef(null); // Create a ref for the chart
 
     useEffect(() => {
@@ -76,6 +95,15 @@ const AdminPage = () => {
         }
     };
 
+    const handleDeclineRequest = async (requestId) => {
+        try {
+            await declineSupplyRequest(requestId);
+            alert('Supply request declined successfully!');
+        } catch (error) {
+            console.error('Error declining supply request:', error);
+        }
+    };
+
     const handleDeactivateClerk = async (clerkId) => {
         try {
             await deactivateClerk(clerkId);
@@ -91,6 +119,21 @@ const AdminPage = () => {
             product.id === productId ? { ...product, paid: true } : product
         ));
         alert('Payment status updated to paid!');
+    };
+
+    const handleAddClerk = async () => {
+        if (newClerkName.trim() === '') {
+            alert('Please enter a clerk name.');
+            return;
+        }
+        try {
+            const newClerk = await addClerk(newClerkName);
+            setClerks([...clerks, newClerk]);
+            setNewClerkName('');
+            alert('Clerk added successfully!');
+        } catch (error) {
+            console.error('Error adding clerk:', error);
+        }
     };
 
     if (loading) return <p>Loading clerks...</p>;
@@ -115,25 +158,40 @@ const AdminPage = () => {
         <div style={{ padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' }}>
             <h1 style={{ color: '#333', textAlign: 'center' }}>Admin Dashboard</h1>
             <h2 style={{ color: '#007bff' }}>Manage Clerks</h2>
+            <input
+                type="text"
+                value={newClerkName}
+                onChange={(e) => setNewClerkName(e.target.value)}
+                placeholder="New Clerk Name"
+                style={{ marginBottom: '10px' }}
+            />
+            <button onClick={handleAddClerk} style={{ marginBottom: '20px' }}>Add Clerk</button>
             <ul style={{ listStyleType: 'none', padding: '0' }}>
                 {clerks.map(clerk => (
-                    <li key={clerk.id} style={{ background: 'white', margin: '10px 0', padding : '10px', borderRadius: '5px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
+                    <li key={clerk.id} style={{ background: 'white', margin: '10px 0', padding: '10px', borderRadius: '5px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
                         <span>{clerk.name} - {clerk.status}</span>
                         <button onClick={() => handleApproveRequest(clerk.requestId)} style={{ marginLeft: '10px' }}>Approve Request</button>
+                        <button onClick={() => handleDeclineRequest(clerk.requestId)} style={{ marginLeft: '10px' }}>Decline Request</button>
                         <button onClick={() => handleDeactivateClerk(clerk.id)} style={{ marginLeft: '10px' }}>Deactivate</button>
                     </li>
                 ))}
             </ul>
             <h2 style={{ color: '#007bff' }}>Product Payment Status</h2>
             <Bar ref={chartRef} data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />
-            <h3 style={{ color: '#333' }}>Products</h3>
+            <h3 style={{ color: '#333' }}>Paid Products</h3>
             <ul style={{ listStyleType: 'none', padding: '0' }}>
-                {products.map(product => (
+                {products.filter(product => product.paid).map(product => (
                     <li key={product.id} style={{ background: 'white', margin: '10px 0', padding: '10px', borderRadius: '5px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
-                        <span>{product.name} - {product.paid ? 'Paid' : 'Not Paid'}</span>
-                        {!product.paid && (
-                            <button onClick={() => handleChangePaymentStatus(product.id)} style={{ marginLeft: '10px' }}>Mark as Paid</button>
-                        )}
+                        <span>{product.name} - Paid</span>
+                    </li>
+                ))}
+            </ul>
+            <h3 style={{ color: '#333' }}>Unpaid Products</h3>
+            <ul style={{ listStyleType: 'none', padding: '0' }}>
+                {products.filter(product => !product.paid).map(product => (
+                    <li key={product.id} style={{ background: 'white', margin: '10px 0', padding: '10px', borderRadius: '5px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
+                        <span>{product.name} - Not Paid</span>
+                        <button onClick={() => handleChangePaymentStatus(product.id)} style={{ marginLeft: '10px' }}>Mark as Paid</button>
                     </li>
                 ))}
             </ul>
