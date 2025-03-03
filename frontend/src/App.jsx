@@ -7,10 +7,14 @@ import RegisterPage from './pages/RegisterPage';
 import ClerkDashboard from './components/ClerkDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import MerchantDashboard from './components/MerchantDashboard';
-import Navbar from './components/Navbar'; // Adjust the import path if necessary
-import Footer from './components/Footer'; // Import the Footer component
+import ProfileDashboard from './components/ProfileDashboard'; // Import the ProfileDashboard component
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 const App = () => {
+    // Simulate user role (this should come from your authentication logic)
+    const userRole = 'admin'; // Change this to 'merchant' or 'clerk' as needed
+
     return (
         <Router>
             <Navbar />
@@ -21,8 +25,9 @@ const App = () => {
                 <Route path="/clerk" element={<ClerkDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/merchant" element={<MerchantDashboard />} />
+                <Route path="/profile-settings" element={<ProfileDashboard userRole={userRole} />} /> {/* Updated line */}
             </Routes>
-            <Footer /> {/* Include the Footer component here */}
+            <Footer />
         </Router>
     );
 };

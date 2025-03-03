@@ -21,6 +21,9 @@ const Navbar = () => {
                         <li className="nav-item">
                             <Link className="nav-link" to="/merchant">Merchant Dashboard</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/profile-settings">Profile Settings</Link> {/* Added Profile Settings link */}
+                        </li>
                     </ul>
                     <ul className="navbar-nav"> {/* Right-aligned links */}
                         <li className="nav-item">
