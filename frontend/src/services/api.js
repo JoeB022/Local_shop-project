@@ -1,17 +1,37 @@
-// src/services/api.js
 console.log("API functions loaded"); // Add this line for debugging
 const API_URL = 'http://localhost:5000/api'; // Replace with your actual API URL
 
+// Mock user data for demonstration purposes
+const mockUsers = [
+    { name: 'Admin User', email: 'admin@localshop.com', password: 'adminpass', role: 'admin' },
+    { name: 'Clerk User', email: 'clerk@localshop.com', password: 'clerkpass', role: 'clerk' },
+    { name: 'Merchant User', email: 'merchant@localshop.com', password: 'merchantpass', role: 'merchant' },
+];
+
 // Register user
 export const registerUser  = async (userData) => {
-    const response = await fetch(`${API_URL}/register`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-    });
-    return response.json();
+    // Check if the user already exists
+    const existingUser  = mockUsers.find(user => user.email === userData.email);
+    if (existingUser ) {
+        return { success: false, message: 'User  already exists' }; // Return failure message
+    }
+
+    // Simulate registration by adding the user to the mockUsers array
+    mockUsers.push(userData); // Add the new user to the mock data
+    console.log("User  registered:", userData); // Debugging line
+    return { success: true }; // Simulate a successful registration response
+};
+
+// Login user
+export const loginUser  = async (userData) => {
+    // Simulate a login process
+    const user = mockUsers.find(user => user.email === userData.email && user.password === userData.password);
+    if (user) {
+        console.log("User  logged in:", user); // Debugging line
+        return { success: true, role: user.role }; // Return success and user role
+    } else {
+        return { success: false, message: 'Invalid credentials' }; // Return failure message
+    }
 };
 
 // Fetch orders

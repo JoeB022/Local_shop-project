@@ -2,27 +2,31 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { loginUser  } from '../services/api'; // Assuming this function exists
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login } = useAuth(); // Get the login function from AuthContext
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const userData = { email };
-        if (email === 'clerk@localshop.com') {
-            login(userData);
-            navigate('/clerk');
-        } else if (email === 'admin@localshop.com') {
-            login(userData);
-            navigate('/admin');
-        } else if (email === 'merchant@localshop.com') {
-            login(userData);
-            navigate('/merchant');
-        } else {
-            alert('Invalid credentials');
+        const userData = { email, password };
+
+        try {
+            // Call the login function from the API service
+            const response = await loginUser (userData);
+
+            if (response.success) {
+                // Set user data in context
+                login({ email, role: response.role }); // Set user role in context
+                navigate(`/${response.role}`); // Redirect based on role
+            } else {
+                alert('Invalid credentials or role mismatch');
+            }
+        } catch (error) {
+            alert('An error occurred during login: ' + error.message);
         }
     };
 

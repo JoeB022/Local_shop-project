@@ -19,7 +19,6 @@ const ClerkDashboard = () => {
                 <h1>Clerk Dashboard</h1>
             </div>
             <div className="dashboard-content">
-                <p>Welcome to the Clerk Dashboard!</p>
                 <ClerkPage />
             </div>
             <div className="dashboard-footer">

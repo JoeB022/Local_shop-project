@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #f8f9fa;
+  background-color: #e0e0e0; /* Slightly darker background */
   color: #333;
   line-height: 1.6;
 }
@@ -16,12 +16,12 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px; /* Increased padding for spacing */
 }
 
 /* ========== Navbar ========== */
 .navbar {
-  background: #007bff;
+  background: #0056b3; /* Darker blue for better contrast */
   color: #fff;
   padding: 15px 20px;
   display: flex;
@@ -43,31 +43,55 @@ body {
   text-decoration: underline;
 }
 
+/* Specific styles for Login and Register links */
+.navbar .login-link,
+.navbar .register-link {
+  color: #28a745; /* More distinct green */
+}
+
+.navbar .login-link:hover,
+.navbar .register-link:hover {
+  text-decoration: underline;
+}
+
 /* ========== Footer ========== */
 .footer {
-  background: #343a40;
-  color: white;
+  background-color: #d6d6d6; /* Darker footer */
+  padding: 20px;
   text-align: center;
-  padding: 15px;
-  position: relative;
-  bottom: 0;
   width: 100%;
+  bottom: 0;
 }
 
 /* ========== Home Page ========== */
-.home {
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 150px);
+  background-color: #d0d0d0; /* Adjusted background */
+  padding: 20px;
+}
+
+.content {
+  max-width: 800px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+  padding: 40px; /* More spacing inside */
   text-align: center;
-  padding: 50px 20px;
+  font-family: 'Playfair Display', serif; /* Updated font for homepage text */
 }
 
-.home h1 {
-  font-size: 2.5rem;
-  color: #007bff;
+h2 {
+  margin-bottom: 20px;
+  color: #0056b3;
 }
 
-.home p {
-  font-size: 1.2rem;
-  margin-top: 10px;
+ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  text-align: left;
 }
 
 /* ========== Authentication Pages ========== */
@@ -76,35 +100,31 @@ body {
   max-width: 400px;
   margin: 50px auto;
   padding: 30px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
   text-align: center;
-}
-
-.auth-container h2 {
-  margin-bottom: 20px;
 }
 
 .auth-container input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
 .auth-container button {
   width: 100%;
-  padding: 10px;
-  background: #007bff;
+  padding: 12px;
+  background: #0056b3;
   color: white;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 .auth-container button:hover {
-  background: #0056b3;
+  background: #003d80;
 }
 
 /* ========== Dashboards ========== */
@@ -112,12 +132,12 @@ body {
 .profile-dashboard,
 .clerk-dashboard,
 .merchant-dashboard {
-  max-width: 800px;
-  margin: 30px auto;
+  max-width: 850px;
+  margin: 40px auto;
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .dashboard h2,
@@ -127,145 +147,75 @@ body {
 .merchant-dashboard h1 {
   text-align: center;
   margin-bottom: 20px;
-  color: #007bff;
+  color: #0056b3;
 }
 
-/* ========== Profile Dashboard ========== */
-.profile-dashboard {
-  max-width: 800px;
-}
-
-.profile-dashboard label {
-  font-weight: bold;
-}
-
+/* Input and Buttons */
 .profile-dashboard input,
-.profile-dashboard select {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.profile-dashboard button {
-  background: #007bff;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-top: 10px;
-}
-
-.profile-dashboard button:hover {
-  background: #0056b3;
-}
-
-/* ========== Clerk Dashboard ========== */
-.clerk-dashboard form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.clerk-dashboard label {
-  font-weight: bold;
-}
-
+.profile-dashboard select,
 .clerk-dashboard input,
-.clerk-dashboard select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.clerk-dashboard button {
-  background: #007bff;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-top: 10px;
-}
-
-.clerk-dashboard .order-list {
-  margin-top: 20px;
-}
-
-.clerk-dashboard ul {
-  list-style: none;
-  padding: 0;
-}
-
-.clerk-dashboard li {
-  background: #f1f1f1;
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 5px;
-}
-
-/* ========== Merchant Dashboard ========== */
-.merchant-dashboard form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.merchant-dashboard label {
-  font-weight: bold;
-}
-
+.clerk-dashboard select,
 .merchant-dashboard input,
 .merchant-dashboard select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-.merchant-dashboard button {
-  background: #007bff;
+button {
+  background: #0056b3;
   color: white;
-  padding: 10px;
+  padding: 12px;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 6px;
   margin-top: 10px;
 }
 
-.merchant-dashboard .order-list {
-  margin-top: 20px;
+button:hover {
+  background: #003d80;
 }
 
+/* Order Lists */
+.clerk-dashboard .order-list,
+.merchant-dashboard .order-list {
+  margin-top: 25px;
+}
+
+.clerk-dashboard ul,
 .merchant-dashboard ul {
   list-style: none;
   padding: 0;
 }
 
+.clerk-dashboard li,
 .merchant-dashboard li {
-  background: #f1f1f1;
-  padding: 10px;
+  background: #f0f0f0;
+  padding: 12px;
   margin: 5px 0;
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 /* ========== Logout Button ========== */
 .logout-btn {
   background: #dc3545;
-  color: black;
-  padding: 12px 20px;
+  color: white;
+  padding: 14px 22px;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 1rem;
-  transition: background 0.3s ease-in-out;
   display: block;
-  margin: 20px auto;
-  width: 200px;
+  margin: 30px auto;
+  width: 220px;
   text-align: center;
+  transition: background 0.3s;
+}
+
+.logout-btn:hover {
+  background: #b02a37;
 }
 
 /* ========== Responsive Design ========== */
@@ -279,14 +229,14 @@ body {
   .profile-dashboard,
   .clerk-dashboard,
   .merchant-dashboard {
-    width: 90%;
+    width: 95%;
   }
 
   .auth-container {
-    width: 90%;
+    width: 95%;
   }
 
-  .logout-btn {
-    width: 100%;
+  .footer {
+    padding: 15px;
   }
 }
