@@ -1,7 +1,8 @@
 // src/components/Auth/Register.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../services/api'; // Assuming this function exists
+import { registerUser } from '../services/api'; 
+
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -24,7 +25,7 @@ const Register = () => {
     return (
         <div className="auth-container"> {/* Styles the full-page background */}
             <div className="auth-box"> {/* Styles the register form container */}
-                <h1>Register</h1>
+                
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
@@ -55,6 +56,7 @@ const Register = () => {
                     </button>
                 </form>
             </div>
+           
         </div>
     );
 };

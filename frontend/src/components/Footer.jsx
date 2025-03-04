@@ -3,9 +3,11 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="footer-content">
-        <p className="footer-text">&copy; 2025 LocalShop. All rights reserved.</p>
+    <footer className="bg-light text-center text-lg-start">
+      <div className="container p-4">
+        <div className="text-center">
+          <p className="text-muted">© 2023 Local Shop. All rights reserved.</p>
+        </div>
       </div>
     </footer>
   );

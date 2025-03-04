@@ -1,56 +1,72 @@
-from flask import Flask,jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, jsonify
 from flask_migrate import Migrate
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, create_access_token
 from flask_cors import CORS
-from flask_mail import Mail
-from config import Config
+from werkzeug.security import check_password_hash
+import os
+import secrets
+from datetime import timedelta
 
-# Extensions
-db = SQLAlchemy()
-migrate = Migrate()
-jwt = JWTManager()
-cors = CORS()
-mail = Mail()
+# Import models and database
+from models import db, User, Store, Product, Stock, SupplyRequest
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)
+# Initialize Flask app
+app = Flask(__name__)
+CORS(app)  # Enable CORS for cross-origin requests
 
-    # Explicitly setting JWT_SECRET_KEY
-    app.config['JWT_SECRET_KEY'] = 'your_secret_key'
 
-    # Initialize extensions
-    db.init_app(app)
-    migrate.init_app(app, db)
-    jwt.init_app(app)
-    cors.init_app(app)
-    mail.init_app(app)
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///localshop.db' 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable modification tracking
 
-    # Import and register blueprints (routes)
-    from views.auth_routes import auth_bp
-    from views.store_routes import store_bp
-    from views.product_routes import product_bp
-    from views.stock_routes import stock_bp
-    from views.merchant_routes import merchant_bp
-    from views.admin_routes import admin_bp
-    from views.clerks_routes import clerk_bp
+# Initialize database & migrations
+db.init_app(app)
+migrate = Migrate(app, db)  # 
 
-    app.register_blueprint(auth_bp, url_prefix='/auth')
-    app.register_blueprint(store_bp, url_prefix='/store')
-    app.register_blueprint(product_bp, url_prefix='/product')
-    app.register_blueprint(stock_bp, url_prefix='/stock')
-    app.register_blueprint(merchant_bp, url_prefix='/merchants')
-    app.register_blueprint(admin_bp, url_prefix='/admins')
-    app.register_blueprint(clerk_bp, url_prefix='/clerks')
+# JWT configuration
+app.config["JWT_SECRET_KEY"] = secrets.token_hex(32)  # Secure JWT secret key
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)  # Token expiration time
+jwt = JWTManager(app)  # Initialize JWTManager
 
-    # Handle JWT errors globally
-    @jwt.unauthorized_loader
-    def unauthorized_callback(error):
-        return jsonify({'message': 'Missing or invalid token'}), 401
+# Secret key for session management
+app.secret_key = secrets.token_hex(16)
 
-    @jwt.invalid_token_loader
-    def invalid_token_callback(error):
-        return jsonify({'message': 'Invalid token'}), 401
+# Authentication Route
+# @app.route('/login', methods=['POST'])
+# def login():
+#     """Login route for authentication."""
+#     data = request.get_json()
+#     email = data.get('email')
+#     password = data.get('password')
 
-    return app
+#     # Check if user exists in Admin, Clerk, or Merchant tables
+#     user = Admin.query.filter_by(email=email).first() or \
+#            Clerk.query.filter_by(email=email).first() or \
+#            Merchant.query.filter_by(email=email).first()
+
+#     if user and check_password_hash(user.password, password):
+#         access_token = create_access_token(
+#             identity={"id": user.id, "email": user.email, "role": user.__class__.__name__}
+#         )
+#         return jsonify({"message": "Login successful", "token": access_token})
+    
+#     return jsonify({"message": "Invalid credentials"}), 401
+
+# Import and register blueprints if they exist
+from Views.user import user_bp
+from Views.supply_request import supply_request_bp
+from Views.store import store_bp
+from Views.product import product_bp 
+from Views.stock import stock_bp
+
+app.register_blueprint(user_bp, url_prefix='/user')
+app.register_blueprint(store_bp, url_prefix='/store')
+app.register_blueprint(product_bp, url_prefix='/product')
+app.register_blueprint(supply_request_bp, url_prefix='/supply_request')
+app.register_blueprint(stock_bp, url_prefix='/stock')
+
+# ✅ Run Flask application
+if __name__ == '__main__':
+    with app.app_context():  # Ensure database tables are created
+        db.create_all()
+    app.run(debug=True)

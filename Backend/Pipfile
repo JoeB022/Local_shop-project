@@ -7,14 +7,14 @@ name = "pypi"
 flask = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
+flask-restful = "*"
 flask-jwt-extended = "*"
-flask-mail = "*"
+flask-bcrypt = "*"
 flask-cors = "*"
-authlib = "*"
-flask-dance = {extras = ["google"], version = "*"}
-flask-login = "*"
-flask-oauthlib = "*"
-flask-dance = "*"
+flask-mail = "*"
+flask-caching = "*"
+python-dotenv = "*"
+flask-debugtoolbar = "*"
 
 [dev-packages]
 
