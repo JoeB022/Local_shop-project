@@ -1,5 +1,5 @@
 console.log("API functions loaded"); // Add this line for debugging
-const API_URL = 'http://localhost:5000/api'; // Replace with your actual API URL
+import { API_URL } from "../config";
 
 // Mock user data for demonstration purposes
 const mockUsers = [
@@ -8,30 +8,58 @@ const mockUsers = [
     { name: 'Merchant User', email: 'merchant@localshop.com', password: 'merchantpass', role: 'merchant' },
 ];
 
-// Register user
-export const registerUser  = async (userData) => {
-    // Check if the user already exists
-    const existingUser  = mockUsers.find(user => user.email === userData.email);
-    if (existingUser ) {
-        return { success: false, message: 'User  already exists' }; // Return failure message
-    }
+// src/services/api.js
 
-    // Simulate registration by adding the user to the mockUsers array
-    mockUsers.push(userData); // Add the new user to the mock data
-    console.log("User  registered:", userData); // Debugging line
-    return { success: true }; // Simulate a successful registration response
+export const registerClerk = async (clerkData) => {
+    const token = localStorage.getItem('token'); // Get the JWT token from localStorage
+
+    try {
+        const response = await fetch(`${API_URL}/auth/register_clerk`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Include the JWT token in the headers
+            },
+            body: JSON.stringify(clerkData), // Send the clerk's email and password
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to register clerk');
+        }
+
+        return await response.json(); // Return the success message
+    } catch (error) {
+        console.error('Error registering clerk:', error);
+        throw error; // Rethrow the error for further handling
+    }
 };
 
 // Login user
-export const loginUser  = async (userData) => {
+export const loginUser = async (userData) => {
     // Simulate a login process
     const user = mockUsers.find(user => user.email === userData.email && user.password === userData.password);
     if (user) {
-        console.log("User  logged in:", user); // Debugging line
+        console.log("User logged in:", user); // Debugging line
         return { success: true, role: user.role }; // Return success and user role
     } else {
         return { success: false, message: 'Invalid credentials' }; // Return failure message
     }
+};
+
+// Send reset password email
+export const sendResetPasswordEmail = async (data) => {
+    const { email } = data;
+
+    // Simulate finding the user by email
+    const user = mockUsers.find(user => user.email === email);
+    if (!user) {
+        return { success: false, message: 'User not found' }; // Return failure message
+    }
+
+    // Simulate sending an email with a reset link
+    console.log(`Reset password email sent to: ${email}`); // Debugging line
+    return { success: true, message: 'Reset password email sent successfully' }; // Simulate success
 };
 
 // Fetch orders

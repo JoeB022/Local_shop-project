@@ -8,6 +8,7 @@ import ClerkDashboard from './components/ClerkDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import MerchantDashboard from './components/MerchantDashboard';
 import ProfileDashboard from './components/ProfileDashboard';
+import AboutPage from './pages/AboutPage'; // Import the AboutPage
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { useAuth } from './context/AuthContext'; // Import your AuthContext
@@ -28,6 +29,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/about" element={<AboutPage />} /> {/* Add the AboutPage route */}
                 <Route path="/clerk" element={
                     <ProtectedRoute allowedRoles={['clerk', 'admin']}>
                         <ClerkDashboard />

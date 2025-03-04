@@ -1,12 +1,13 @@
-// src/components/Auth/Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { loginUser  } from '../services/api'; // Assuming this function exists
+import { loginUser , sendResetPasswordEmail } from '../services/api'; // Assuming this function exists
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [resetEmail, setResetEmail] = useState(''); // State for reset email
+    const [isResetting, setIsResetting] = useState(false); // State to toggle reset form
     const navigate = useNavigate();
     const { login } = useAuth(); // Get the login function from AuthContext
 
@@ -27,6 +28,22 @@ const Login = () => {
             }
         } catch (error) {
             alert('An error occurred during login: ' + error.message);
+        }
+    };
+
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await sendResetPasswordEmail({ email: resetEmail });
+            if (response.success) {
+                alert('Reset password email sent! Please check your inbox.');
+                setIsResetting(false); // Close the reset form
+                setResetEmail(''); // Clear the email input
+            } else {
+                alert('Failed to send reset password email. Please try again.');
+            }
+        } catch (error) {
+            alert('An error occurred: ' + error.message);
         }
     };
 
@@ -55,6 +72,35 @@ const Login = () => {
                         Login
                     </button>
                 </form>
+                <button
+                    className="reset-btn"
+                    onClick={() => setIsResetting(true)} // Show reset form
+                >
+                    Reset Password
+                </button>
+
+                {isResetting && (
+                    <form onSubmit={handleResetPassword} style={{ marginTop: '20px' }}>
+                        <input
+                            type="email"
+                            className="auth-input"
+                            placeholder="Enter your email to reset password"
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                            required
+                        />
+                        <button type="submit" className="reset-btn">
+                            Send Reset Link
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setIsResetting(false)} // Close reset form
+                            style={{ marginLeft: '10px' }}
+                        >
+                            Cancel
+                        </button>
+                    </form>
+                )}
             </div>
         </div>
     );

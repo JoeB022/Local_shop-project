@@ -14,7 +14,10 @@ const Navbar = () => {
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul className="navbar-nav mx-auto"> {/* Center the dashboard links */}
+                    <ul className="navbar-nav me-auto"> {/* Left-aligned links */}
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/about">About</Link> {/* About link */}
+                        </li>
                         {user && user.role === 'clerk' && (
                             <li className="nav-item">
                                 <Link className="nav-link" to="/clerk">Clerk Dashboard</Link>
