@@ -1,4 +1,5 @@
-console.log("API functions loaded"); // Add this line for debugging
+console.log("API functions loaded"); // Debugging
+
 import { API_URL } from "../config";
 
 // Mock user data for demonstration purposes
@@ -8,19 +9,44 @@ const mockUsers = [
     { name: 'Merchant User', email: 'merchant@localshop.com', password: 'merchantpass', role: 'merchant' },
 ];
 
-// src/services/api.js
-
-export const registerClerk = async (clerkData) => {
+// Register user
+export const registerUser = async (userData) => {
     const token = localStorage.getItem('token'); // Get the JWT token from localStorage
 
     try {
-        const response = await fetch(`${API_URL}/auth/register_clerk`, {
+        const response = await fetch(`${API_URL}/user/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, // Include the JWT token in the headers
+                'Authorization': `Bearer ${token}`, // Include the JWT token
             },
-            body: JSON.stringify(clerkData), // Send the clerk's email and password
+            body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to register user');
+        }
+
+        return await response.json(); // Return success response
+    } catch (error) {
+        console.error('Error registering user:', error);
+        throw error; // Rethrow for further handling
+    }
+};
+
+// Register clerk
+export const registerClerk = async (clerkData) => {
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch(`${API_URL}/user/register_clerk`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(clerkData),
         });
 
         if (!response.ok) {
@@ -28,54 +54,48 @@ export const registerClerk = async (clerkData) => {
             throw new Error(errorData.message || 'Failed to register clerk');
         }
 
-        return await response.json(); // Return the success message
+        return await response.json();
     } catch (error) {
         console.error('Error registering clerk:', error);
-        throw error; // Rethrow the error for further handling
+        throw error;
     }
 };
 
 // Login user
 export const loginUser = async (userData) => {
-    // Simulate a login process
     const user = mockUsers.find(user => user.email === userData.email && user.password === userData.password);
     if (user) {
-        console.log("User logged in:", user); // Debugging line
-        return { success: true, role: user.role }; // Return success and user role
+        console.log("User logged in:", user);
+        return { success: true, role: user.role };
     } else {
-        return { success: false, message: 'Invalid credentials' }; // Return failure message
+        return { success: false, message: 'Invalid credentials' };
     }
 };
 
 // Send reset password email
 export const sendResetPasswordEmail = async (data) => {
     const { email } = data;
-
-    // Simulate finding the user by email
     const user = mockUsers.find(user => user.email === email);
     if (!user) {
-        return { success: false, message: 'User not found' }; // Return failure message
+        return { success: false, message: 'User not found' };
     }
 
-    // Simulate sending an email with a reset link
-    console.log(`Reset password email sent to: ${email}`); // Debugging line
-    return { success: true, message: 'Reset password email sent successfully' }; // Simulate success
+    console.log(`Reset password email sent to: ${email}`);
+    return { success: true, message: 'Reset password email sent successfully' };
 };
 
 // Fetch orders
 export const fetchOrders = async () => {
-    const response = await fetch(`${API_URL}/orders`); // Ensure this endpoint is correct
+    const response = await fetch(`${API_URL}/orders`);
     if (!response.ok) throw new Error('Failed to fetch orders');
     return response.json();
 };
 
 // Record item details
 export const recordItemDetails = async (itemDetails) => {
-    const response = await fetch(`${API_URL}/items`, { // Adjust the endpoint as needed
+    const response = await fetch(`${API_URL}/items`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(itemDetails),
     });
     if (!response.ok) throw new Error('Failed to record item details');
@@ -84,11 +104,9 @@ export const recordItemDetails = async (itemDetails) => {
 
 // Request supply
 export const requestSupply = async (itemDetails) => {
-    const response = await fetch(`${API_URL}/supply-request`, { // Adjust the endpoint as needed
+    const response = await fetch(`${API_URL}/supply-request`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(itemDetails),
     });
     if (!response.ok) throw new Error('Failed to request supply');
@@ -131,9 +149,7 @@ export const fetchAdmins = async () => {
 export const addAdmin = async (email) => {
     const response = await fetch(`${API_URL}/admins`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
     });
     if (!response.ok) throw new Error('Failed to add admin');

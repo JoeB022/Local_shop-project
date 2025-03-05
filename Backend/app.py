@@ -14,7 +14,6 @@ from models import db, User, Store, Product, Stock, SupplyRequest
 app = Flask(__name__)
 CORS(app)  # Enable CORS for cross-origin requests
 
-
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///localshop.db' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable modification tracking
@@ -70,4 +69,3 @@ if __name__ == '__main__':
     with app.app_context():  # Ensure database tables are created
         db.create_all()
     app.run(debug=True)
-

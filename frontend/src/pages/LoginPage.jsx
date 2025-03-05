@@ -4,7 +4,7 @@ import Login from "../components/Login";
 const LoginPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+      <div >
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">
           Welcome Back!
         </h2>

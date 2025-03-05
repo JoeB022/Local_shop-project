@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: fb441eac3b17
+Revision ID: 2b1c1fe3e0e7
 Revises: 
-Create Date: 2025-03-04 15:30:37.557353
+Create Date: 2025-03-05 22:54:55.275331
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fb441eac3b17'
+revision = '2b1c1fe3e0e7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,11 +21,11 @@ def upgrade():
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=64), nullable=False),
-    sa.Column('password_hash', sa.String(length=128), nullable=True),
+    sa.Column('password_hash', sa.String(length=128), nullable=False),
     sa.Column('role', sa.Enum('merchant', 'admin', 'clerk', name='role'), nullable=False),
     sa.Column('clerk_id', sa.Integer(), nullable=True),
     sa.Column('is_clerk', sa.Boolean(), nullable=True),
-    sa.ForeignKeyConstraint(['clerk_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['clerk_id'], ['users.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('username')
     )
@@ -33,8 +33,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('address', sa.Text(), nullable=False),
-    sa.Column('merchant_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['merchant_id'], ['users.id'], ),
+    sa.Column('merchant_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['merchant_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('products',
@@ -42,32 +42,32 @@ def upgrade():
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('buying_price', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('selling_price', sa.Numeric(precision=10, scale=2), nullable=False),
-    sa.Column('store_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['store_id'], ['stores.id'], ),
+    sa.Column('store_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['store_id'], ['stores.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('stocks',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('quantity_spoilt', sa.Integer(), nullable=False),
     sa.Column('last_updated', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('supply_requests',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('store_id', sa.Integer(), nullable=True),
-    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.Column('store_id', sa.Integer(), nullable=False),
+    sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('requested_quantity', sa.Integer(), nullable=False),
     sa.Column('received_quantity', sa.Integer(), nullable=True),
     sa.Column('payment_status', sa.String(length=50), nullable=False),
     sa.Column('status', sa.String(length=50), nullable=False),
     sa.Column('requested_at', sa.DateTime(), nullable=True),
     sa.Column('clerk_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['clerk_id'], ['users.id'], ),
-    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
-    sa.ForeignKeyConstraint(['store_id'], ['stores.id'], ),
+    sa.ForeignKeyConstraint(['clerk_id'], ['users.id'], ondelete='SET NULL'),
+    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['store_id'], ['stores.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

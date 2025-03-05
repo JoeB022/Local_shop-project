@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { registerUser  } from '../services/api'; // Ensure this function exists
 
 const Register = () => {
-    const [name, setName] = useState('');
+    const [username, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('clerk'); // Default role
@@ -12,7 +12,7 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const userData = { name, email, password, role }; // Include role in user data
+        const userData = { username, email, password, role }; // Include role in user data
 
         try {
             const response = await registerUser (userData); // Call the register function from the API service
@@ -36,8 +36,8 @@ const Register = () => {
                     <input
                         type="text"
                         className="auth-input"
-                        placeholder="Name"
-                        value={name}
+                        placeholder="Username"
+                        value={username}
                         onChange={(e) => setName(e.target.value)}
                         required
                     />
