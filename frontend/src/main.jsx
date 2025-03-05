@@ -1,8 +1,8 @@
 // src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client'; // Import from 'react-dom/client'
-import App from './App';
-import { AuthProvider } from './context/AuthContext';
+import App from './App'; // Import your main App component
+import { AuthProvider } from './context/AuthContext'; // Import the AuthProvider
 import './App.css'; // Import your CSS file if you have one
 
 // Create a root

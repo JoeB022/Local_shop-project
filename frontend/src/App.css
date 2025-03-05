@@ -1,26 +1,29 @@
-/* ========== CSS Variables ========== */
-:root {
-  /* Color Palette */
-  --primary-color: #007bff; /* Bright blue */
-  --primary-dark: #0056b3; /* Darker blue */
-  --secondary-color: #6c757d; /* Gray */
-  --accent-color: #ffc107; /* Yellow */
-  --background-color: #f0f4f8; /* Soft light background */
-  --card-color: #ffffff; /* White for cards */
-  --text-color: #333333; /* Dark text */
-  --text-light: #6c757d; /* Light gray text */
-  --border-color: #dee2e6; /* Light border */
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
 
-  /* Spacing & Radius */
-  --border-radius-md: 10px;
-  --border-radius-lg: 12px;
-  --spacing-lg: 20px;
-  --spacing-xl: 30px;
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+body {
+  background-color: #e0e0e0; /* Slightly darker background */
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ========== Layout ========== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px; /* Increased padding for spacing */
 }
 
 /* ========== Navbar Styles ========== */
 .navbar {
+  background: #0056b3; /* Darker blue for better contrast */
+  color: #fff;
+  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,163 +38,203 @@
   font-weight: bold;
 }
 
-.navbar-menu {
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* Specific styles for Login and Register links */
+.navbar .login-link,
+.navbar .register-link {
+  color: #28a745; /* More distinct green */
+}
+
+.navbar .login-link:hover,
+.navbar .register-link:hover {
+  text-decoration: underline;
+}
+
+/* ========== Footer ========== */
+.footer {
+  background-color: #d6d6d6; /* Darker footer */
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  bottom: 0;
+}
+
+/* ========== Home Page ========== */
+.home-container {
   display: flex;
-  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 150px);
+  background-color: #d0d0d0; /* Adjusted background */
+  padding: 20px;
 }
 
-.navbar-menu a {
+.content {
+  max-width: 800px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+  padding: 40px; /* More spacing inside */
+  text-align: center;
+  font-family: 'Playfair Display', serif; /* Updated font for homepage text */
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #0056b3;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  text-align: left;
+}
+
+/* ========== Authentication Container ========== */
+.auth-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.auth-container button {
+  width: 100%;
+  padding: 12px;
+  background: #0056b3;
   color: white;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
 }
 
-.navbar-menu a:hover {
-  color: var(--accent-color);
+.auth-container button:hover {
+  background: #003d80;
 }
 
-/* Responsive Navbar */
+/* ========== Dashboards ========== */
+.dashboard,
+.profile-dashboard,
+.clerk-dashboard,
+.merchant-dashboard {
+  max-width: 850px;
+  margin: 40px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard h2,
+.profile-dashboard h1,
+.profile-dashboard h2,
+.clerk-dashboard h1,
+.merchant-dashboard h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0056b3;
+}
+
+/* Input and Buttons */
+.profile-dashboard input,
+.profile-dashboard select,
+.clerk-dashboard input,
+.clerk-dashboard select,
+.merchant-dashboard input,
+.merchant-dashboard select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  background: #0056b3;
+  color: white;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #003d80;
+}
+
+/* Order Lists */
+.clerk-dashboard .order-list,
+.merchant-dashboard .order-list {
+  margin-top: 25px;
+}
+
+.clerk-dashboard ul,
+.merchant-dashboard ul {
+  list-style: none;
+  padding: 0;
+}
+
+.clerk-dashboard li,
+.merchant-dashboard li {
+  background: #f0f0f0;
+  padding: 12px;
+  margin: 5px 0;
+  border-radius: 6px;
+}
+
+/* ========== Logout Button ========== */
+.logout-btn {
+  background: #dc3545;
+  color: white;
+  padding: 14px 22px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1rem;
+  display: block;
+  margin: 30px auto;
+  width: 220px;
+  text-align: center;
+  transition: background 0.3s;
+}
+
+.logout-btn:hover {
+  background: #b02a37;
+}
+
+/* ========== Responsive Design ========== */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
     text-align: center;
   }
 
-  .navbar-menu {
-    flex-direction: column;
-    gap: 10px;
-  }
-}
-
-/* ========== Authentication Container ========== */
-.auth-container {
-  max-width: 400px;
-  margin: auto;
-  background-color: var(--card-color);
-  border-radius: var(--border-radius-md);
-  padding: var(--spacing-xl);
-  box-shadow: var(--shadow-md);
-  text-align: center;
-}
-
-.auth-header {
-  text-align: center;
-  margin-bottom: var(--spacing-lg);
-  color: var(--text-color);
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
-.auth-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-md);
-  font-size: 1rem;
-  color: var(--text-color);
-}
-
-.auth-input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.auth-footer {
-  margin-top: var(--spacing-lg);
-  font-size: 0.9rem;
-}
-
-.auth-footer a {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.auth-footer a:hover {
-  text-decoration: underline;
-}
-
-/* ========== Button Styles ========== */
-button, .btn {
-  border-radius: 8px;
-  padding: 10px 15px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
-}
-
-button:hover, .btn:hover {
-  background-color: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-}
-
-button:active, .btn:active {
-  transform: scale(0.98);
-}
-
-/* ========== Footer Styles ========== */
-.footer {
-  background-color: var(--secondary-color);
-  color:cadetblue;
-  text-align: center;
-  padding: var(--spacing-lg);
-  margin-top: var(--spacing-xl);
-}
-
-.footer a {
-  color: var(--accent-color);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.footer a:hover {
-  text-decoration: underline;
-}
-
-/* Responsive Footer */
-@media (max-width: 768px) {
-  .footer {
-    font-size: 0.9rem;
-    padding: var(--spacing-lg);
-  }
-}
-
-/* ========== Typography ========== */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-h1 {
-  color: var(--primary-dark);
-}
-
-p {
-  color: var(--text-light);
-}
-
-/* ========== Spacing ========== */
-.container {
-  padding: var(--spacing-lg);
-}
-
-/* ========== Responsive Design ========== */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 1.8rem;
+  .dashboard,
+  .profile-dashboard,
+  .clerk-dashboard,
+  .merchant-dashboard {
+    width: 95%;
   }
 
   .auth-container {
-    padding: var(--spacing-lg);
+    width: 95%;
+  }
+
+  .footer {
+    padding: 15px;
   }
 }

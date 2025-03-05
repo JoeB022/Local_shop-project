@@ -20,3 +20,4 @@ flask-debugtoolbar = "*"
 
 [requires]
 python_version = "3.12"
+
