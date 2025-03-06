@@ -1,187 +1,205 @@
-// src/pages/ClerkPage.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { Spinner, Form, Button, Alert, Container, Row, Col } from "react-bootstrap";
 
-// Mock data for orders
-const mockOrders = [
-    { id: 1, description: 'Order 1', status: 'Pending' },
-    { id: 2, description: 'Order 2', status: 'Pending' },
-];
-
-// Mock functions to simulate API calls
+// Replace with actual API calls if ready
 const fetchOrders = async () => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(mockOrders);
-        }, 1000); // Simulate a 1 second delay
-    });
+  return new Promise((resolve) => {
+    setTimeout(() => resolve([{ id: 1, description: "Order 1", status: "Pending" }]), 1000);
+  });
 };
 
 const recordItemDetails = async (itemDetails) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log('Recorded item details:', itemDetails);
-            resolve('Item details recorded');
-        }, 500); // Simulate a 0.5 second delay
-    });
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("Recorded item details:", itemDetails);
+      resolve("Item details recorded");
+    }, 500);
+  });
 };
 
 const requestSupply = async (itemDetails) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log('Supply requested for:', itemDetails);
-            resolve('Supply request sent');
-        }, 500); // Simulate a 0.5 second delay
-    });
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("Supply requested for:", itemDetails);
+      resolve("Supply request sent");
+    }, 500);
+  });
 };
 
 const ClerkPage = () => {
-    const [itemDetails, setItemDetails] = useState({
-        itemsReceived: 0,
-        paymentStatus: 'not paid',
-        itemsInStock: 0,
-        itemsSpoilt: 0,
-        buyingPrice: 0,
-        sellingPrice: 0,
+  const initialItemDetails = {
+    itemsReceived: 0,
+    paymentStatus: "not paid",
+    itemsInStock: 0,
+    itemsSpoilt: 0,
+    buyingPrice: 0,
+    sellingPrice: 0,
+  };
+
+  const [itemDetails, setItemDetails] = useState(initialItemDetails);
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getOrders = async () => {
+      try {
+        const data = await fetchOrders();
+        setOrders(data);
+      } catch (error) {
+        setError("Error fetching orders");
+      } finally {
+        setLoadingOrders(false);
+      }
+    };
+    getOrders();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setItemDetails({
+      ...itemDetails,
+      [name]: name.includes("items") || name.includes("Price") ? Number(value) : value,
     });
-    const [loading, setLoading] = useState(true);
-    const [orders, setOrders] = useState([]);
-    const [error, setError] = useState(null);
+  };
 
-    useEffect(() => {
-        const getOrders = async () => {
-            try {
-                const data = await fetchOrders(); // Fetch orders from the mock data
-                setOrders(data);
-            } catch (error) {
-                setError('Error fetching orders');
-                console.error('Error fetching orders:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await recordItemDetails(itemDetails);
+      alert("Item details recorded successfully!");
+      setItemDetails(initialItemDetails);
+    } catch (error) {
+      setError("Failed to record item details");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
-        getOrders();
-    }, []);
+  const handleRequestSupply = async () => {
+    setSubmitting(true);
+    try {
+      await requestSupply(itemDetails);
+      alert("Supply request sent successfully!");
+    } catch (error) {
+      setError("Failed to request supply");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setItemDetails({ ...itemDetails, [name]: value });
-    };
+  return (
+    <Container className="mt-2">
+      <h2 className="text-center mb-2">Clerk Dashboard</h2>
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await recordItemDetails(itemDetails); // Function to record item details
-            alert('Item details recorded successfully!');
-            // Reset item details after recording
-            setItemDetails({
-                itemsReceived: 0,
-                paymentStatus: 'not paid',
-                itemsInStock: 0,
-                itemsSpoilt: 0,
-                buyingPrice: 0,
-                sellingPrice: 0,
-            });
-        } catch (error) {
-            console.error('Error recording item details:', error);
-        }
-    };
+      {error && <Alert variant="danger">{error}</Alert>}
 
-    const handleRequestSupply = async () => {
-        try {
-            await requestSupply(itemDetails); // Function to request supply
-            alert('Supply request sent successfully!');
-        } catch (error) {
-            console.error('Error requesting supply:', error);
-        }
-    };
+      {/* Form Section */}
+      <Row className="justify-content-center">
+        <Col md={8}>
+          <Form onSubmit={handleSubmit} className="p-4 border rounded shadow">
+            <h4 className="mb-3">Add Item Details</h4>
 
-    if (loading) return <p>Loading orders...</p>;
-    if (error) return <p>{error}</p>;
+            <Form.Group className="mb-3">
+              <Form.Label>Items Received</Form.Label>
+              <Form.Control
+                type="number"
+                name="itemsReceived"
+                value={itemDetails.itemsReceived}
+                onChange={handleInputChange}
+                placeholder="Enter number of items received"
+                required
+              />
+            </Form.Group>
 
-    return (
-        <div>
-          
-            <form onSubmit={handleSubmit}>
-                <h2>Add Item Details</h2>
-                <label>
-                    Items Received:
-                    <input
-                        type="number"
-                        name="itemsReceived"
-                        value={itemDetails.itemsReceived}
-                        onChange={handleInputChange}
-                        placeholder="Enter number of items received"
-                        required
-                    />
-                </label>
-                <label>
-                    Payment Status:
-                    <select
-                        name="paymentStatus"
-                        value={itemDetails.paymentStatus}
-                        onChange={handleInputChange}
-                        required
-                    >
-                        <option value="not paid">Not Paid</option>
-                        <option value="paid">Paid</option>
-                    </select>
-                </label>
-                <label>
-                    Items in Stock:
-                    <input
-                        type="number"
-                        name="itemsInStock"
-                        value={itemDetails.itemsInStock}
-                        onChange={handleInputChange}
-                        placeholder="Enter number of items in stock"
-                        required
-                    />
-                </label>
-                <label>
-                    Items Spoilt:
-                    <input
-                        type="number"
-                        name="itemsSpoilt"
-                        value={itemDetails.itemsSpoilt}
-                        onChange={handleInputChange}
-                        placeholder="Enter number of items spoilt"
-                        required
-                    />
-                </label>
-                <label>
-                    Buying Price:
-                    <input
-                        type="number"
-                        name="buyingPrice"
-                        value={itemDetails.buyingPrice}
-                        onChange={handleInputChange}
-                        placeholder="Enter buying price"
-                        required
-                    />
-                </label>
-                <label>
-                    Selling Price:
-                    <input
-                        type="number"
-                        name="sellingPrice"
-                        value={itemDetails.sellingPrice}
-                        onChange={handleInputChange}
-                        placeholder="Enter selling price"
-                        required
-                    />
-                </label>
-                <button type="submit">Record Item</button>
-            </form>
-            <button onClick={handleRequestSupply}>Request Supply</button>
-            <h2>Pending Orders</h2>
-            <ul>
-                {orders.map(order => (
-                    <li key={order.id}>{order.description} - Status: {order.status}</li>
-                ))}
+            <Form.Group className="mb-3">
+              <Form.Label>Payment Status</Form.Label>
+              <Form.Select name="paymentStatus" value={itemDetails.paymentStatus} onChange={handleInputChange} required>
+                <option value="not paid">Not Paid</option>
+                <option value="paid">Paid</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Items in Stock</Form.Label>
+              <Form.Control
+                type="number"
+                name="itemsInStock"
+                value={itemDetails.itemsInStock}
+                onChange={handleInputChange}
+                placeholder="Enter number of items in stock"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Items Spoilt</Form.Label>
+              <Form.Control
+                type="number"
+                name="itemsSpoilt"
+                value={itemDetails.itemsSpoilt}
+                onChange={handleInputChange}
+                placeholder="Enter number of items spoilt"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Buying Price</Form.Label>
+              <Form.Control
+                type="number"
+                name="buyingPrice"
+                value={itemDetails.buyingPrice}
+                onChange={handleInputChange}
+                placeholder="Enter buying price"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Selling Price</Form.Label>
+              <Form.Control
+                type="number"
+                name="sellingPrice"
+                value={itemDetails.sellingPrice}
+                onChange={handleInputChange}
+                placeholder="Enter selling price"
+                required
+              />
+            </Form.Group>
+
+            <Button variant="primary" type="submit" disabled={submitting}>
+              {submitting ? "Recording..." : "Record Item"}
+            </Button>
+          </Form>
+
+          <Button variant="warning" className="mt-3 w-100" onClick={handleRequestSupply} disabled={submitting}>
+            {submitting ? "Requesting..." : "Request Supply"}
+          </Button>
+        </Col>
+      </Row>
+
+      {/* Orders Section */}
+      <Row className="mt-5">
+        <Col>
+          <h4>Pending Orders</h4>
+          {loadingOrders ? (
+            <Spinner animation="border" />
+          ) : (
+            <ul className="list-group">
+              {orders.map((order) => (
+                <li key={order.id} className="list-group-item">
+                  {order.description} - <strong>{order.status}</strong>
+                </li>
+              ))}
             </ul>
-        </div>
-    );
+          )}
+        </Col>
+      </Row>
+    </Container>
+  );
 };
 
 export default ClerkPage;

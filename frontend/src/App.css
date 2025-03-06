@@ -118,9 +118,9 @@ ul {
 .merchant-dashboard {
   max-width: 850px;
   margin: 40px auto;
-  background: white;
+  /* background: white; */
   padding: 25px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 

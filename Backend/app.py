@@ -12,7 +12,7 @@ from models import db, User, Store, Product, Stock, SupplyRequest
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app)  # Enable CORS for cross-origin requests
+CORS(app, resources={r"/*": {"origins" :  "*"}}, supports_credentials=True)  # Enable CORS for cross-origin requests
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///localshop.db' 

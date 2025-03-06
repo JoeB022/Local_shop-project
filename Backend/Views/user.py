@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import re
+from enum import Enum
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
 
@@ -20,10 +21,6 @@ def role_required(allowed_roles):
         return wrapper
     return decorator
 
-from flask import request, jsonify
-from werkzeug.security import generate_password_hash
-from models import db, User
-from enum import Enum
 
 # Ensure Role Enum is correctly defined
 class Role(Enum):
@@ -96,15 +93,36 @@ def register():
 @user_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
+
+    # Check if email and password are provided
     if not data or 'email' not in data or 'password' not in data:
         return jsonify({'error': 'Missing email or password'}), 400
-    
-    user = User.query.filter_by(email=data['email']).first()
-    if not user or not check_password_hash(user.password_hash, data['password']):
+
+    email = data['email'].strip().lower()  # Normalize email input
+    password = data['password']
+
+    # Fetch user from database
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        print(f"Login failed: User with email {email} not found.")  # Debugging
         return jsonify({'error': 'Invalid email or password'}), 401
-    
+
+    # Verify password
+    if not check_password_hash(user.password_hash, password):
+        print(f"Login failed: Incorrect password for {email}")  # Debugging
+        return jsonify({'error': 'Invalid email or password'}), 401
+
+    # Generate access token
     access_token = create_access_token(identity={'id': user.id, 'role': user.role.value})
-    return jsonify({'access_token': access_token, 'role': user.role.value}), 200
+    
+    print(f"User {email} logged in successfully as {user.role.value}")  # Debugging
+
+    return jsonify({
+        'message': f'Welcome {user.username}, you are logged in!',
+        'access_token': access_token,
+        'role': user.role.value
+    }), 200
 
 @user_bp.route('/profile', methods=['GET'])
 @jwt_required()

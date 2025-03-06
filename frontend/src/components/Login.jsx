@@ -1,60 +1,62 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { loginUser , sendResetPasswordEmail } from '../services/api'; // Assuming this function exists
+import { loginUser, sendResetPasswordEmail } from '../services/api'; // Import API functions
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [resetEmail, setResetEmail] = useState(''); // State for reset email
-    const [isResetting, setIsResetting] = useState(false); // State to toggle reset form
+    const [resetEmail, setResetEmail] = useState('');
+    const [isResetting, setIsResetting] = useState(false);
+    const [error, setError] = useState(null); // Stores error message
     const navigate = useNavigate();
-    const { login } = useAuth(); // Get the login function from AuthContext
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const userData = { email, password };
+        setError(null); // Clear previous errors
 
         try {
-            // Call the login function from the API service
-            const response = await loginUser (userData);
+            const response = await loginUser({ email, password });
 
-            if (response.success) {
-                // Set user data in context
-                login({ email, role: response.role }); // Set user role in context
+            if (response && response.role) { 
+                login({ email, role: response.role }); // Store user role
                 navigate(`/${response.role}`); // Redirect based on role
             } else {
-                alert('Invalid credentials or role mismatch');
+                setError('Invalid credentials or role mismatch');
             }
         } catch (error) {
-            alert('An error occurred during login: ' + error.message);
+            setError(error.message || 'An error occurred during login');
         }
     };
 
     const handleResetPassword = async (e) => {
         e.preventDefault();
+        setError(null);
+
         try {
             const response = await sendResetPasswordEmail({ email: resetEmail });
             if (response.success) {
                 alert('Reset password email sent! Please check your inbox.');
-                setIsResetting(false); // Close the reset form
-                setResetEmail(''); // Clear the email input
+                setIsResetting(false);
+                setResetEmail('');
             } else {
-                alert('Failed to send reset password email. Please try again.');
+                setError('Failed to send reset password email. Please try again.');
             }
         } catch (error) {
-            alert('An error occurred: ' + error.message);
+            setError(error.message || 'An error occurred');
         }
     };
 
     return (
-        <div className="auth-container"> {/* Styles the full-page background */}
-            <div className="auth-box"> {/* Styles the login form container */}
+        <div className="auth-container">
+            <div className="auth-box">
                 <h1>Login</h1>
+                {error && <p className="error-message">{error}</p>} {/* Display errors */}
                 <form onSubmit={handleSubmit}>
                     <input
                         type="email"
-                        className="auth-input" // Matches CSS for styling
+                        className="auth-input"
                         placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -68,16 +70,10 @@ const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                    <button type="submit" className="login-btn">
-                        Login
-                    </button>
+                    <button type="submit" className="login-btn">Login</button>
                 </form>
-                <button
-                    className="reset-btn"
-                    onClick={() => setIsResetting(true)} // Show reset form
-                >
-                    Reset Password
-                </button>
+
+                <button className="reset-btn" onClick={() => setIsResetting(true)}>Reset Password</button>
 
                 {isResetting && (
                     <form onSubmit={handleResetPassword} style={{ marginTop: '20px' }}>
@@ -89,16 +85,8 @@ const Login = () => {
                             onChange={(e) => setResetEmail(e.target.value)}
                             required
                         />
-                        <button type="submit" className="reset-btn">
-                            Send Reset Link
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setIsResetting(false)} // Close reset form
-                            style={{ marginLeft: '10px' }}
-                        >
-                            Cancel
-                        </button>
+                        <button type="submit" className="reset-btn">Send Reset Link</button>
+                        <button type="button" onClick={() => setIsResetting(false)} style={{ marginLeft: '10px' }}>Cancel</button>
                     </form>
                 )}
             </div>

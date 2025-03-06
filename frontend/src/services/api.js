@@ -18,23 +18,26 @@ export const registerUser = async (userData) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, // Include the JWT token
+                'Authorization': `Bearer ${token}`, 
             },
             body: JSON.stringify(userData),
         });
-
+    
+        const data = await response.json(); // Get response data
+    
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to register user');
+            throw new Error(data.error || 'Failed to register user');
         }
-
-        return await response.json(); // Return success response
+    
+        alert(`Success: ${data.message}`); // Show success message
+        return data; // Return data for further use
+    
     } catch (error) {
         console.error('Error registering user:', error);
-        throw error; // Rethrow for further handling
+        alert(`Registration Failed: ${error.message}`); // Show error message
+        throw error;
     }
 };
-
 // Register clerk
 export const registerClerk = async (clerkData) => {
     const token = localStorage.getItem('token');
@@ -61,14 +64,42 @@ export const registerClerk = async (clerkData) => {
     }
 };
 
-// Login user
+//Login
 export const loginUser = async (userData) => {
-    const user = mockUsers.find(user => user.email === userData.email && user.password === userData.password);
-    if (user) {
-        console.log("User logged in:", user);
-        return { success: true, role: user.role };
-    } else {
-        return { success: false, message: 'Invalid credentials' };
+    try {
+        const response = await fetch(`${API_URL}/user/login`, { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to log in');
+        }
+
+        // Store the token and role in localStorage
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('role', data.role);
+
+        // Redirect based on role
+        if (data.role === 'clerk') {
+            window.location.href = '/clerk'; // Redirect clerks to the Clerk Dashboard
+        } else if (data.role === 'admin') {
+            window.location.href = '/admin';
+        } else if (data.role === 'merchant') {
+            window.location.href = '/merchant';
+        } else {
+            window.location.href = '/';
+        }
+
+        return { role: data.role };
+    } catch (error) {
+        console.error('Error logging in:', error);
+        throw error;
     }
 };
 
@@ -84,81 +115,176 @@ export const sendResetPasswordEmail = async (data) => {
     return { success: true, message: 'Reset password email sent successfully' };
 };
 
-// Fetch orders
-export const fetchOrders = async () => {
-    const response = await fetch(`${API_URL}/orders`);
-    if (!response.ok) throw new Error('Failed to fetch orders');
+export const fetchAdminData = async () => {
+    const response = await fetch(`${API_URL}/user/admin-data`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch admin data');
     return response.json();
 };
 
-// Record item details
-export const recordItemDetails = async (itemDetails) => {
-    const response = await fetch(`${API_URL}/items`, {
+export const fetchClerkData = async () => {
+    const response = await fetch(`${API_URL}/user/clerk-data`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch clerk data');
+    return response.json();
+};
+
+export const fetchMerchantData = async () => {
+    const response = await fetch(`${API_URL}/user/merchant-data`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch merchant data');
+    return response.json();
+};
+
+// Product Management
+export const createProduct = async (productData) => {
+    const response = await fetch(`${API_URL}/product/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(itemDetails),
+        headers: getAuthHeaders(),
+        body: JSON.stringify(productData),
     });
-    if (!response.ok) throw new Error('Failed to record item details');
+    if (!response.ok) throw new Error('Failed to create product');
     return response.json();
 };
 
-// Request supply
-export const requestSupply = async (itemDetails) => {
-    const response = await fetch(`${API_URL}/supply-request`, {
+export const getProducts = async () => {
+    const response = await fetch(`${API_URL}/product/`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch products');
+    return response.json();
+};
+
+export const getProduct = async (productId) => {
+    const response = await fetch(`${API_URL}/product/${productId}`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch product');
+    return response.json();
+};
+
+export const updateProduct = async (productId, productData) => {
+    const response = await fetch(`${API_URL}/product/${productId}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(productData),
+    });
+    if (!response.ok) throw new Error('Failed to update product');
+    return response.json();
+};
+
+export const deleteProduct = async (productId) => {
+    const response = await fetch(`${API_URL}/product/${productId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to delete product');
+    return response.json();
+};
+
+// Stock Management
+export const createStock = async (stockData) => {
+    const response = await fetch(`${API_URL}/stock/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(itemDetails),
+        headers: getAuthHeaders(),
+        body: JSON.stringify(stockData),
     });
-    if (!response.ok) throw new Error('Failed to request supply');
+    if (!response.ok) throw new Error('Failed to create stock');
     return response.json();
 };
 
-// Fetch clerks
-export const fetchClerks = async () => {
-    const response = await fetch(`${API_URL}/clerks`);
-    if (!response.ok) throw new Error('Failed to fetch clerks');
+export const getStock = async (stockId) => {
+    const response = await fetch(`${API_URL}/stock/${stockId}`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch stock');
     return response.json();
 };
 
-// Approve supply request
-export const approveSupplyRequest = async (requestId) => {
-    const response = await fetch(`${API_URL}/supply-request/${requestId}/approve`, {
+export const updateStock = async (stockId, stockData) => {
+    const response = await fetch(`${API_URL}/stock/${stockId}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(stockData),
+    });
+    if (!response.ok) throw new Error('Failed to update stock');
+    return response.json();
+};
+
+export const deleteStock = async (stockId) => {
+    const response = await fetch(`${API_URL}/stock/${stockId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to delete stock');
+    return response.json();
+};
+
+// Store Management
+export const createStore = async (storeData) => {
+    const response = await fetch(`${API_URL}/store/`, {
         method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(storeData),
     });
-    if (!response.ok) throw new Error('Failed to approve supply request');
+    if (!response.ok) throw new Error('Failed to create store');
     return response.json();
 };
 
-// Deactivate clerk
-export const deactivateClerk = async (clerkId) => {
-    const response = await fetch(`${API_URL}/clerks/${clerkId}/deactivate`, {
+export const getStores = async () => {
+    const response = await fetch(`${API_URL}/store/`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch stores');
+    return response.json();
+};
+
+export const getStore = async (storeId) => {
+    const response = await fetch(`${API_URL}/store/${storeId}`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch store');
+    return response.json();
+};
+
+export const updateStore = async (storeId, storeData) => {
+    const response = await fetch(`${API_URL}/store/${storeId}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(storeData),
+    });
+    if (!response.ok) throw new Error('Failed to update store');
+    return response.json();
+};
+
+export const deleteStore = async (storeId) => {
+    const response = await fetch(`${API_URL}/store/${storeId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to delete store');
+    return response.json();
+};
+
+// Supply Requests
+export const createSupplyRequest = async (supplyData) => {
+    const response = await fetch(`${API_URL}/supply_request/`, {
         method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(supplyData),
     });
-    if (!response.ok) throw new Error('Failed to deactivate clerk');
+    if (!response.ok) throw new Error('Failed to create supply request');
     return response.json();
 };
 
-// Fetch admins
-export const fetchAdmins = async () => {
-    const response = await fetch(`${API_URL}/admins`);
-    if (!response.ok) throw new Error('Failed to fetch admins');
+export const getSupplyRequest = async (requestId) => {
+    const response = await fetch(`${API_URL}/supply_request/${requestId}`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error('Failed to fetch supply request');
     return response.json();
 };
 
-// Add admin
-export const addAdmin = async (email) => {
-    const response = await fetch(`${API_URL}/admins`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+export const updateSupplyRequest = async (requestId, updateData) => {
+    const response = await fetch(`${API_URL}/supply_request/${requestId}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updateData),
     });
-    if (!response.ok) throw new Error('Failed to add admin');
+    if (!response.ok) throw new Error('Failed to update supply request');
     return response.json();
 };
 
-// Fetch store performance
-export const fetchStorePerformance = async () => {
-    const response = await fetch(`${API_URL}/store-performance`);
-    if (!response.ok) throw new Error('Failed to fetch store performance');
+export const deleteSupplyRequest = async (requestId) => {
+    const response = await fetch(`${API_URL}/supply_request/${requestId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to delete supply request');
     return response.json();
 };
